@@ -1,22 +1,43 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const MongoClient = require('mongodb').MongoClient;
 
 require('dotenv').config();
 
+//instance of server
 const app = express();
 const port = process.env.PORT || 3000;
 
+//connect to mongo Atlas
+const uri = process.env.ATLAS_URI;
+
+//handling data
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-const uri = process.env.ATLAS_URI;
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});
+//mongodb deprecated
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useUnifiedTopology', true);
 
-app.listen(port, ()=> console.log(`Server is running on port ${port}`));
+
+//connect to Database
+mongoose.connect(uri);
+
+//callback to check Database connection
+const connection = mongoose.connection;
+connection.once('open', () =>
+    console.log('MongoDb database conncetion established successfully!')
+);
+
+const dailyRoute = require('./routes/dayRoute');
+const orderRoute = require('./routes/orderRoute');
+const userRoute = require('./routes/userRoute');
+
+app.use("/day", dailyRoute);
+app.use("/order", orderRoute);
+app.use("/user", userRoute);
+
+app.listen(port, ()=> console.log(`Server running at port ${port}`))
