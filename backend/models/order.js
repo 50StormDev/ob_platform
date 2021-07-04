@@ -6,9 +6,24 @@ const orderSchema = new Schema({
         type: String,
         required: true
     },
-    payout: Number,
-    estrategy: [{type: String}],
-    result: Number,
+    timeframe: {
+        type: String,
+        required: true
+    },
+    amount: {
+        type: Number,
+        required: true
+    },
+    payout:{
+        type: Number,
+        required: true,
+        maximum: 100,
+        minimum: 80,
+    },
+    profit: Number,
+    analysis: [
+        {type: String}
+    ],
     strategyWorked: Boolean,
     entryDate: Date
 });

@@ -6,7 +6,7 @@ require('dotenv').config();
 
 //instance of server
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 //connect to mongo Atlas
 const uri = process.env.ATLAS_URI;
