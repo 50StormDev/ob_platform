@@ -17,7 +17,7 @@ function Copyright() {
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+        Ob_Plaftorm
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -72,7 +72,7 @@ export default function SignUp() {
 
   function handleSubmit(e){
     e.preventDefault();
-    axios.post( "http://localhost:5000/user/add", {newUser});
+    axios.post( "https://ob-platform-server.herokuapp.com/user/add", {newUser});
   }
 
 

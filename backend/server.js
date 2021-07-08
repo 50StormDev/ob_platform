@@ -27,9 +27,10 @@ mongoose.set('useUnifiedTopology', true);
 mongoose.connect(uri);
 
 //callback to check Database connection
+let mongo = "";
 const connection = mongoose.connection;
 connection.once('open', () =>
-    console.log('MongoDb database conncetion established successfully!')
+   mongo='MongoDb database conncetion established successfully!'
 );
 
 const dailyRoute = require('./routes/dayRoute');
