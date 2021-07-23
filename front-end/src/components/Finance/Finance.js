@@ -17,17 +17,13 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { mainListItems} from '../dashboard/listItems';
-import backImage from '../../img/mountain.jpg'
+import backImage from '../../img/mountain1.jpg'
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import PropTypes from 'prop-types';
-import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-
-
+import FinanceDeposit from './Finance-Deposit';
+import FinanceWithdraw from './Finance-Withdraw';
+import FinanceHistory from './Finance-History'
 function Copyright() {
   return (
     <Typography style={{color:'white'}} variant="body2" align="center">
@@ -51,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundPosition: 'center',
     backgroundPositionY: 'top',
     height:'100%',
-    width: '100%',
+    width: '100%'
   },
   toolbar: {
     paddingRight: 24, // keep right padding when drawer closed
@@ -114,9 +110,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     height: '100vh',
-    overflow: 'auto',
-    background: 'black',
-    opacity:'0.7'
+    overflow: 'auto'
   },
   container: {
     paddingTop: theme.spacing(4),
@@ -251,50 +245,13 @@ export default function Dashboard() {
                 </Tabs>
             </AppBar>
             <TabPanel value={value} index={0}>
-                <Container maxWidth="sm" className={classes.mainContent}>
-                    <form className={classes.form} noValidate>
-                        <h1 style={{margin:'0', marginBottom: '25px'}}>Deposit</h1>
-                        <TextField className={classes.input}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="account"
-                        label="Account"
-                        name="account"
-                        autoFocus
-                        />
-                        <TextField className={classes.input}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="Amount"
-                        label="Amount"
-                        type="text"
-                        id="Amount"
-                        />
-                        <h3>Deposit: $100</h3>
-                        <h3>Total Balance: $1100</h3>
-                        <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                        >
-                        Deposit
-                        </Button>
-                        <Grid container>
-                        </Grid>
-                    </form>
-                </Container>
+                <FinanceDeposit/>
             </TabPanel>
             <TabPanel value={value} index={1}>
-                Withdrawqefqewf
+                <FinanceWithdraw/>
             </TabPanel>
             <TabPanel value={value} index={2}>
-                Historyqefqwef
+                <FinanceHistory/>
             </TabPanel>
           <Box pt={4}>
             <Copyright />
