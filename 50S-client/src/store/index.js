@@ -1,15 +1,11 @@
+import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from "./reducers";
-import { createStore, applyMiddleware, compose } from "redux";
-import thunk from "redux-thunk";
+import { routerMiddleware } from 'connected-react-router';
+import history from '../routes/history';
 
-export function configureStore(){
-    const store = createStore(
-        rootReducer,
-        compose(
-            applyMiddleware(thunk),
-            window.devToolsExtension ? window.devToolsExtension() : f => f
-        )
-    );
-
-    return store;
-};
+// configureStore by dafault has redux-thunk and compose 
+const store =  configureStore({
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(routerMiddleware(history))
+})
+export default store;

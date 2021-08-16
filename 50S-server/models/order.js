@@ -2,10 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const orderSchema = new Schema({
-    id: {
-        type: String,
-        required: true
-    },
     pair: {
         type: String,
         required: true
@@ -20,16 +16,16 @@ const orderSchema = new Schema({
     },
     payout:{
         type: Number,
-        required: true,
-        maximum: 100,
-        minimum: 80,
+        required: true
     },
-    profit: Number,
-    analysis: [
-        {type: String}
-    ],
-    strategyWorked: Boolean,
-    entryDate: Date.now()
+    profit: {
+        type: Number,
+        required: true
+    },
+    result: {
+        type: String,
+        required: true
+    }
 }, {
     timestamps: true
 });

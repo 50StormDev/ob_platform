@@ -1,22 +1,27 @@
-import { apiCall } from "../../services/api";
-import { SET_CURRENT_USER } from "../actionTypes";
+import { apiCall, setTokenHeader } from "../../services/api";
+import { addError, removeError } from "./errors";
+import store from '../reducers/index';
+import { setAuthorization,  authUser} from "../reducers/currentUser";
 
-export function setCurrentUser(user){
-    return {
-        type: SET_CURRENT_USER,
-        user
-    };
-};
 
-export function authUser(type, userData){
-    return dispatch => {
-        return new Promise((resolve, reject) => {
-            // pass method, API URL, userData
-            return apiCall("post", "http" ,userData).then(({ token, ...user }) => {
-                localStorage.setItem("jwtToken", token);
-                dispatch(setCurrentUser(user));
-                resolve();
-            })
-        })
-    }
-}
+// export function authUser(type, url, userData){
+
+//     return dispatch => {
+//         //wrap our thunk in a promise so we can wait for the API call
+//         return new Promise((resolve, reject) => {
+//             // pass method, API URL, userData
+//             return apiCall("post", `${url}/api/auth/${type}`, userData).then(({ token, ...data }) => {
+//                 localStorage.setItem("jwtToken", token); // save jwtToken in localStorage
+//                 setAuthorization(token) //pass token to be placed to the header
+//                 console.log(data);
+//                 dispatch(user.actions.setCurrentUser(data)); //pass the object received from the API call 
+//                 dispatch(removeError()) 
+//                 resolve(); // indicate that the API call succeeded
+//             })
+//             .catch(err => {
+//                 dispatch(addError(err.message)); // take the message sent by the server 
+//                 reject();   // indicate the API call failed
+//             })
+//         })
+//     }
+// }

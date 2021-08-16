@@ -7,27 +7,25 @@ const TradingProfile = require('./trading_profile');
 const brookerSchema = new mongoose.Schema({
     name:{
         type: String,
-        required: true
-    },
-    timerLock: {
-        type: String,
-        required: true
+        required: true,
+        unique: true
     },
     password: {
         type: String
     },
-    lastLogin: {
-        type: Date,
-        required: true
-    },
-    tradingProfile: {
+    client_list:[{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'TradingProfile'
-    }
+        ref: "TradingProfile"
+    }],
+    account_list: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Account"
+    }]
+    
 })
 
 // Remove the Brooker from TradingProfile
-brookerSchema.pre("remove", async function(req, res, next){
+brookerSchema.pre("remove", async function(next){
     try {
         // find the trandingProfile
         let tradingProfile = await TradingProfile.findById(this.name);

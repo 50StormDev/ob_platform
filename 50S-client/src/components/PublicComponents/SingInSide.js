@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { push } from 'connected-react-router';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -9,8 +12,10 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import landingIMG from '../img/login.jpg';
-import Copyright from './Copyright';
+import landingIMG from '../../img/login.jpg';
+import Copyright from '../Copyright';
+import { setCurrentUser } from '../../store/reducers/currentUser';
+import { addError, removeError } from '../../store/reducers/error';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,8 +62,47 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function SignInSide() {
+// Setup the SignInSide component
+export function SignInSide() {
   const classes = useStyles();
+  const user = useSelector(state => state.user)
+  const dispatch = useDispatch();
+  // instantiate the state
+  const [info, setInfo] = useState({
+    email: "lucia@lucia.com",
+    password: "lucia"
+  });
+
+  // handle the input, by get the input and assign to the state
+  function handleChange(e){
+    const { name, value } = e.target;
+
+    setInfo(prevInfo => {
+      return {
+        ...prevInfo,
+        [name]: value
+      };
+    });
+  }
+
+  // handle the post request to the api
+  function handleSubmit(e){
+    e.preventDefault();
+    dispatch(setCurrentUser({ 
+      action: "signin", 
+      path: "http://localhost:5000", 
+      input: info
+    }))
+    .then(unwrapResult).then((pbj) => {
+      console.log({login: pbj})
+      dispatch(removeError())
+      dispatch(push("/Trading"))
+    }).catch((error) => {
+      alert(error.message)
+      setInfo({email:"", password:""})
+      dispatch(addError(error))
+    })
+  }
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -80,6 +124,8 @@ export default function SignInSide() {
               name="email"
               autoComplete="email"
               autoFocus
+              value={info.email}
+              onChange={handleChange}
             />
             <TextField className={classes.input}
               variant="outlined"
@@ -91,6 +137,8 @@ export default function SignInSide() {
               type="password"
               id="password"
               autoComplete="current-password"
+              value={info.password}
+              onChange={handleChange}
             />
             <FormControlLabel className={classes.link}
               control={<Checkbox value="remember" color="primary" /> }
@@ -102,6 +150,7 @@ export default function SignInSide() {
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={handleSubmit}
             >
               Sign In
             </Button>
@@ -124,3 +173,5 @@ export default function SignInSide() {
     </Grid>
   );
 }
+
+export default SignInSide;

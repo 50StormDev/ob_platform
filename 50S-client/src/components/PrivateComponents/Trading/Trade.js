@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import DayLimit from './DayLimit';
 import TradeDropdown from './TradeDropdown';
-import Assets from '../../assets';
+import Assets from '../../../assets';
 
 
 const useStyles = makeStyles({
@@ -21,6 +21,7 @@ const useStyles = makeStyles({
 });
 
 export default function Withdraw() {
+
   const classes = useStyles();
   return (
     <React.Fragment>

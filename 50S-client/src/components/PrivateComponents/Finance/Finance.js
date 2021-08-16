@@ -6,12 +6,12 @@ import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Link from '@material-ui/core/Link';
-import backImage from '../../img/mountain1.jpg'
+import backImage from '../../../img/mountain1.jpg'
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import PropTypes from 'prop-types';
 import Navbar from '../Navbar';
-import Copyright from '../Copyright';
+import Copyright from '../../Copyright';
 import FinanceDeposit from './Finance-Deposit';
 import FinanceWithdraw from './Finance-Withdraw';
 import FinanceHistory from './Finance-History'

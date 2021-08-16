@@ -1,6 +1,5 @@
 const db = require("../models");
 const jwt = require("jsonwebtoken");
-const { v4: uuidv4 } = require('uuid');
 
 exports.signin = async function(req, res, next){
     //finding a user
@@ -21,7 +20,8 @@ exports.signin = async function(req, res, next){
                 id, 
                 username,
                 token
-            });
+                });
+            
         } else {
             return next({
                 status: 400,
@@ -44,25 +44,31 @@ exports.signup = async function(req, res, next){
         // create a user
         // create a token (sigin a token)
         // process.env.SECRET_KEY
-        let u_id = uuidv4();
-        console.log({...req.body, u_id})
-        let user = await db.User.create({...req.body, u_id});
+        console.log({...req.body})
+        let user = await db.User.create({...req.body});
         
         let { id, fName, lName, email, username, password, profileImageUrl} = user 
         
+        let tradingProfile = await db.TradingProfile.create({
+            user: id,
+            total_win: 0,
+            total_loss: 0,
+            totalBalance: 0,
+            totalProfit: 0,
+            platform: {}
+        })
+
         let token = jwt.sign(
             {
-                u_id,
+                id,
                 username, 
                 profileImageUrl
             },
             process.env.SECRET_KEY
         );
         return res.status(200).json({
-            u_id,
             id,
-            username, 
-            profileImageUrl,
+            username,
             token
         });
 

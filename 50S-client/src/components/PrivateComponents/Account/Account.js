@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState }from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
-import backImage from '../img/mountain1.jpg';
-import Trade from './Trading/Trade';
-import Navbar from './Navbar'
-import Copyright from './Copyright';
-
+import backImage from '../../../img/mountain1.jpg';
+import Navbar from '../Navbar'
+import Copyright from '../../Copyright';
+import { useDispatch, useSelector } from 'react-redux';
+import AccountForm from './AccountForm';
+import AccountBrookers from './AccountBrookers';
+import AccountList from './AccountList'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,11 +29,25 @@ const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
+  }, 
+  header_text: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 'xxx-large',
+    marginBottom: '60px'
+  },
+  brookers: {
+    display: 'flex',
+    justifyContent: 'space-evenly'
   }
 }));
 
-export default function Dashboard() {
+export default function Account() {
   const classes = useStyles();
+
+  const account = useSelector(state => state.account)
+
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -39,7 +55,13 @@ export default function Dashboard() {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-            <Copyright />
+            
+
+            {account.path ==="" && <AccountBrookers/>}
+
+            <AccountList/>
+            <AccountForm/>
+            <Copyright style={{color:"white"}}/>
         </Container>
       </main>
     </div>

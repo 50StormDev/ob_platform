@@ -31,4 +31,5 @@ module.exports.User = require("./user");
 module.exports.TradingProfile = require("./trading_profile");
 module.exports.Brooker = require("./brooker");
 module.exports.Account = require("./account");
-mocule.exports.Order = require("./order.");
+module.exports.Strategy = require("./strategy");
+module.exports.Order = require("./order");

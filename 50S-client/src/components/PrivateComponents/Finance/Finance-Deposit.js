@@ -33,6 +33,16 @@ export default function Deposits() {
                         required
                         fullWidth
                         id="account"
+                        label="Brooker"
+                        name="account"
+                        autoFocus
+                        />
+                        <TextField className={classes.input}
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="account"
                         label="Account"
                         name="account"
                         autoFocus

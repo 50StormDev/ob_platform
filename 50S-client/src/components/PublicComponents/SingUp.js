@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setCurrentUser } from '../../store/reducers/currentUser';
+import { push } from 'connected-react-router';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -10,9 +12,11 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import SignUpImage from '../img/singup1.jpeg';
-import Copyright from './Copyright';
-
+import SignUpImage from '../../img/singup1.jpeg';
+import Copyright from '../Copyright';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { addError } from '../../store/reducers/error';
+import { getProfile } from '../../store/reducers/profileReducer';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -73,9 +77,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const [newUser, setNewUser] = useState({
-      ui_id:"",
       fName:"",
       lName:"",
       email:"",
@@ -97,9 +101,23 @@ export default function SignUp() {
   function handleSubmit(e){
     e.preventDefault();
     if (newUser.password === newUser.passwordConfirmation){
-       axios.post( "https://ob-platform-server.herokuapp.com/user/add", {newUser})
+        dispatch(setCurrentUser({ 
+        action: "signup", 
+        path: "http://localhost:5000", 
+        input: newUser
+      })).then(unwrapResult).then((user) => {
+        dispatch(getProfile(user.id))
+        dispatch(push("/Trading"))
+      }).catch((e)=>dispatch(addError(e)))
     } else {
       alert("Password not match, please type again!");
+      setNewUser((prev) => {
+        return {
+          ...prev,
+          passwordConfirmation: "",
+          password: ""
+        }
+      })
     }
   }
 
@@ -178,6 +196,7 @@ export default function SignUp() {
                 id="password"
                 autoComplete="current-password"
                 style={{background: classes.incorrect}}
+                value={newUser.password}
               />
             </Grid>
             <Grid item xs={12} style={{background: classes.incorrect}}>
@@ -191,6 +210,7 @@ export default function SignUp() {
                 type="password"
                 id="passwordConfirmation"
                 autoComplete="current-password"
+                value={newUser.passwordConfirmation}
                 
               />
             </Grid>

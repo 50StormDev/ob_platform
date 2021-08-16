@@ -2,7 +2,12 @@ const express = require('express');
 const cors = require('cors');
 const errorHandler = require("./handlers/error")
 const app = express();
+
 const authRoutes = require("./routes/auth");
+const tradingProfileRoutes = require("./routes/tradingProfileRoute");
+const brookerRoutes = require("./routes/brookerRoute");
+const accountRoutes = require("./routes/accountRouter");
+
 const { loginRequired, ensureCorrectUser } = require("./middleware/auth");
 require('dotenv').config();
 
@@ -26,9 +31,24 @@ app.use(express.urlencoded({ extended: true })); //instead of using body-parser
 // app.use("/order", orderRoute);
 // app.use("/user", userRoute);
 
+// Login/Logout
 app.use("/api/auth", authRoutes);
+app.use("/admin", brookerRoutes);
+app.use("/profile", tradingProfileRoutes );
+app.use("/account", accountRoutes);
+// Profile (CRUD User info)
+// Dashboard (Get all infos)
+   // user/:id/
+// Trading (Account/Orders)
+   // /user/:id/:account_id/ get/update
+// Finance  (Accounts) Deposit/Withdraw
+   // /user/:id/:account_id/ => get/update
+// Account (CRUD) 
+   // /user/:id/ => get/add/update/delete
+
+
 // example of setup a middleware
-app.use("/api/users/:id/trading", loginRequired, ensureCorrectUser, "userRourtes")
+//app.use("/api/users/:id/trading", loginRequired, ensureCorrectUser, "userRourtes")
 //if any of the routes were achive 
 app.use(function(req, res, next){
    let err = new Error("Not Found");
