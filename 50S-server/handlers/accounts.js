@@ -8,8 +8,8 @@ exports.getAll = async function (req, res, next){
 
 }
 exports.createAccount = async function (req, res, next){
+    let strategy_id = ""
     try {
-        let strategy_id = ""
         // Create strategy in case has no strategy set
         if(req.body.strategy === "createStrategy"){
             // check if this name already been used
@@ -29,8 +29,10 @@ exports.createAccount = async function (req, res, next){
             }
         } else {
             // Found the strategy and push user to strategy_users 
-            let foundStrategy = await db.Strategy.find({strategy_name: req.body.strategy})
-            strategy_id = foundStrategy.id
+            let foundStrategy = await db.Strategy.find({strategy_name:req.body.strategy})
+            console.log(foundStrategy)
+            strategy_id = foundStrategy[0].id
+            console.log(strategy_id)
         }
         let account = await db.Account.create({
             account_name: req.body.account_name,
@@ -70,14 +72,17 @@ exports.createAccount = async function (req, res, next){
 
         let foundAccount = await db.Account.findById(account._id);
         await foundAccount.populate('strategy', 'strategy_name risk').execPopulate()
+        console.log(foundAccount.strategy)
+        console.log(foundAccount.populated('strategy'))
         await foundAccount.save()
 
         // Find Strategy and add this user to the strategy user list 
         let foundStrategy = await db.Strategy.findById(strategy_id)
         foundStrategy.strategy_users.push(account.id)
         await foundStrategy.save()
+        await foundProfile.populate('accounts','account_name balance').execPopulate()
 
-        return res.status(201).json(foundAccount)
+        return res.status(201).json(foundProfile.accounts)
     } catch (err){
         return next({
             status: 500,
@@ -87,18 +92,50 @@ exports.createAccount = async function (req, res, next){
 }
 
 exports.deposit = async function(req, res, next){
-    
+    try {
+        let foundAccount = await db.Account.findById(req.params.account_id);
+        let balance = Number(foundAccount.balance) + Number(req.body.ammount)
+        console.log(typeof(balance))
+        foundAccount.balance = balance
+        await foundAccount.save();
+        let foundProfile = await db.TradingProfile.findById(req.params.profile_id)
+        await foundProfile.populate('accounts','account_name balance').execPopulate()
+
+        return res.status(200).json({ total_balance:foundAccount.balance, refresh:foundProfile, res: `Your balance is now ${foundAccount.balance}$`})
+    } catch (e){
+        return next({
+            status: 500,
+            message: "Failed to Deposit Account"
+        })
+    }
 }
 
 exports.withdraw = async function(req, res, next){
+    try {
+        let foundAccount = await db.Account.findById(req.params.account_id);
+        let balance = Number(foundAccount.balance) - Number(req.body.ammount)
+        console.log(typeof(balance))
+        foundAccount.balance = balance
+        await foundAccount.save();
+        let foundProfile = await db.TradingProfile.findById(req.params.profile_id)
+        await foundProfile.populate('accounts','account_name balance').execPopulate()
 
+        return res.status(200).json({ total_balance:foundAccount.balance, refresh:foundProfile, res: `Your balance is now ${foundAccount.balance}$`})
+    } catch (e){
+        return next({
+            status: 500,
+            message: "Failed to Withdraw Account"
+        })
+    }
 }
 
 exports.remove = async function(req, res, next){
     try {
         let foundAccount = await db.Account.findById(req.params.account_id);
         await foundAccount.remove();
-        return res.status(200).json({res: `${foundAccount.id} deleted!`})
+        let foundTradingProfile = await db.TradingProfile.findById(req.params.profile_id)
+        await foundTradingProfile.populate('accounts','account_name balance').execPopulate()
+        return res.status(200).json({list:foundTradingProfile.accounts, res: `${foundAccount.name} deleted!`})
     } catch (e){
         return next({
             status: 500,

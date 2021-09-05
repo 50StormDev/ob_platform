@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import AccountItem from './AccountItem';
+import { useSelector } from 'react-redux';
 import {
   Typography,
   Paper,
@@ -24,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SelectedListItem() {
   const classes = useStyles();
+  const profile = useSelector(state => state.profile)
   const [selectedIndex, setSelectedIndex] = React.useState(1);
 
   const handleListItemClick = (event, index) => {
@@ -37,9 +39,16 @@ export default function SelectedListItem() {
             Accounts
         </Typography>
       <List component="nav" aria-label="main mailbox folders">
-        <AccountItem name="Main Account"/>
-        <Divider/>
-        <AccountItem name="Wishes Accounts"/>
+      {profile.data.accounts.map(item =>
+        <React.Fragment>
+          <AccountItem id={item._id} name={item.account_name} balance={item.balance}/>
+          <Divider/>
+        </React.Fragment>
+        
+        )
+      }
+        
+        
       </List>
       <Grid item style={{ marginTop: 16 }}>
         <Button

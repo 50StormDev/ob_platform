@@ -1,21 +1,18 @@
 import React, { useState } from 'react';
-import { Form, Field } from 'react-final-form';
 import { createAccount } from '../../../store/reducers/Account';
+import { addError, removeError } from '../../../store/reducers/error';
+import { refreshAccount } from '../../../store/reducers/profileReducer';
+import { unwrapResult } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
-import { TextField, Checkbox, Radio, Select } from '@material-ui/core';
+import { TextField, Select } from '@material-ui/core';
+import Divider from '@material-ui/core/Divider';
 import {
   Typography,
   Paper,
-  Link,
   Grid,
   Button,
   CssBaseline,
-  RadioGroup,
-  FormLabel,
   MenuItem,
-  FormGroup,
-  FormControl,
-  FormControlLabel, 
   Slider,
   InputLabel
 } from '@material-ui/core';
@@ -44,14 +41,31 @@ export default function AccountForm() {
       };
     })
   }
+
+  function handleRisk(event, newValue){
+    console.log(newValue)
+    setAccount(prevInfo => {
+      return {
+        ...prevInfo,
+        risk: newValue
+      }
+    })
+  }
   function handleCreateAccount(e){
     e.preventDefault()
     dispatch(createAccount({
       path: "http://localhost:5000",
       profile_id: profile.data.id,
-      brooker_id: "61132b578105e41aba37e0d1",
+      brooker_id: "612bdf3d80000a5e4fbaf2eb",
       input: account
     }))
+    .then(unwrapResult).then((accountList) => {
+      try{ dispatch(refreshAccount(accountList))} catch(e){console.log(e)}
+      dispatch(removeError())
+    }).catch((error) => {
+      alert(error.message)
+      dispatch(addError(error))
+    })
 
   }
   return (
@@ -95,8 +109,8 @@ export default function AccountForm() {
                   formControlProps={{ fullWidth: true }}
                 >
                 {/* Polulate whith strategy name and id */}
-                  <MenuItem value="London">2X1</MenuItem>
-                  <MenuItem value="Paris">4X2</MenuItem>
+                  <MenuItem value="2X1 - 10%">2X1</MenuItem>
+                  <MenuItem value="4x2">4X2</MenuItem>
                   <MenuItem value="createStrategy">
                     Add Strategy
                   </MenuItem>
@@ -104,6 +118,7 @@ export default function AccountForm() {
               </Grid>
               {(account.strategy === "createStrategy") &&  
                 <React.Fragment>
+                  <Divider/>
                   <Typography variant="h4" align="center" component="h1" gutterBottom>
                   Create Strategy
                   </Typography>
@@ -145,7 +160,7 @@ export default function AccountForm() {
                   </Grid>
                   <Grid item xs={6}>
                       <Typography id="discrete-slider" gutterBottom>
-                          Risk
+                          Risk {account.risk}%
                       </Typography>
                       <Slider
                         defaultValue={5}
@@ -156,7 +171,7 @@ export default function AccountForm() {
                           marks
                           min={1}
                           max={20}
-                          onChange={handleChangeAccount}
+                          onChange={handleRisk}
                       />
                   </Grid>
 

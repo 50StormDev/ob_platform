@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { apiCall, setTokenHeader } from "../../services/api";
-
 const initialState = {
     isAuthenticated: false, // credential
     user: {},   // user data
@@ -51,7 +50,6 @@ const userSlice = createSlice({
         },
         [setCurrentUser.fulfilled]: (state, {payload}) => {
             state.isAuthenticated = true
-            state.user = payload
             state.call = "successfull" 
         },
         [setCurrentUser.rejected]: (state, {error}) => {

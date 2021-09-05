@@ -6,7 +6,7 @@ import jwtDecode from 'jwt-decode';
 import { useDispatch } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { push } from 'connected-react-router';
-import { getProfile } from '../store/reducers/profileReducer'
+import { getProfile, populate } from '../store/reducers/profileReducer'
 
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
@@ -36,7 +36,10 @@ function Routes() {
         try {
             // populate the user id
             dispatch(hasAccess(jwtDecode(personalToken))).then(unwrapResult).then((user) => {
-            dispatch(getProfile(user.id))
+            dispatch(getProfile(user.id)).then(unwrapResult).then(profile => {
+                dispatch(populate(profile.trading_profile[0]))
+            })
+            
             dispatch(push("/Trading"))
             })
         } catch (e) {

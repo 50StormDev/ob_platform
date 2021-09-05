@@ -8,6 +8,8 @@ exports.signin = async function(req, res, next){
         email: req.body.email
         });
         let { id, username} = user;
+        let foundTradingProfile = await db.TradingProfile.findOne({user: id})
+        await foundTradingProfile.populate('accounts','account_name balance').execPopulate()
         let isMatch = await user.comparePassword((req.body.password));
         if(isMatch) {
             let token = jwt.sign({
@@ -17,9 +19,8 @@ exports.signin = async function(req, res, next){
                 process.env.SECRET_KEY
             );
             return res.status(200).json({
-                id, 
-                username,
-                token
+                token,
+                foundTradingProfile
                 });
             
         } else {
@@ -51,11 +52,13 @@ exports.signup = async function(req, res, next){
         
         let tradingProfile = await db.TradingProfile.create({
             user: id,
-            total_win: 0,
-            total_loss: 0,
+            accounts: [],
+            withdraw_list: [],
             totalBalance: 0,
             totalProfit: 0,
-            platform: {}
+            total_loss: 0,
+            total_win: 0
+            
         })
 
         let token = jwt.sign(
@@ -68,6 +71,7 @@ exports.signup = async function(req, res, next){
         );
         return res.status(200).json({
             id,
+            tradingProfile,
             username,
             token
         });

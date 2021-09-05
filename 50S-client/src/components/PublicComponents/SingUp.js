@@ -16,7 +16,7 @@ import SignUpImage from '../../img/singup1.jpeg';
 import Copyright from '../Copyright';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { addError } from '../../store/reducers/error';
-import { getProfile } from '../../store/reducers/profileReducer';
+import { getProfile, populate } from '../../store/reducers/profileReducer';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -107,8 +107,12 @@ export default function SignUp() {
         input: newUser
       })).then(unwrapResult).then((user) => {
         dispatch(getProfile(user.id))
+        try{ dispatch(populate(user.tradingProfile))} catch(e){console.log(e)}
         dispatch(push("/Trading"))
-      }).catch((e)=>dispatch(addError(e)))
+      }).catch((e)=>{
+        alert(e.message)
+        dispatch(addError(e))
+      })
     } else {
       alert("Password not match, please type again!");
       setNewUser((prev) => {

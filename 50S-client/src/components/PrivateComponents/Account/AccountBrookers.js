@@ -24,7 +24,6 @@ export default function AccountBrookers(props) {
     const classes = useStyles();
     return (
         <React.Fragment>
-            <h1 className={classes.header_text}>Account</h1>
             <Container className={classes.brookers}>
               <Card brooker_img= {PocketOption_img} brooker_name="PocketOption"/>
               <Card brooker_img= {HighLow_img} brooker_name="HighLow"/>

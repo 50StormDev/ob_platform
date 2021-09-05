@@ -1,13 +1,17 @@
 import React from 'react';
+import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { depositAccount } from '../../../store/reducers/Account';
+import { unwrapResult } from '@reduxjs/toolkit';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-
-function preventDefault(event) {
-  event.preventDefault();
-}
+import { addError, removeError } from '../../../store/reducers/error';
+import { Select } from '@material-ui/core';
+import { MenuItem, InputLabel } from '@material-ui/core';
+import { refreshAccount } from '../../../store/reducers/profileReducer';
 
 const useStyles = makeStyles({
   depositContext: {
@@ -21,6 +25,57 @@ const useStyles = makeStyles({
 });
 
 export default function Deposits() {
+  const dispatch = useDispatch()
+  const profile = useSelector(state => state.profile)
+  const [info, setInfo] = useState({
+    account: null,
+    ammount: null,
+    total_balance: 0
+  })
+
+  function handleChange(e){
+    const { name, value } = e.target
+    if(name==='account'){
+      let total = profile.data.accounts.filter(item => item._id === value)
+      console.log(total)
+        setInfo(prev => {
+      return {
+        ...prev, 
+        [name]: value,
+      total_balance: total[0].balance
+      };
+    });
+    }
+    setInfo(prev => {
+      return {
+        ...prev, 
+      [name]: value
+      };
+    });
+  }
+
+  function handleDeposit(e){
+    e.preventDefault()
+    dispatch(depositAccount({
+      path:"http://localhost:5000/account",
+      profile_id: profile.data.id,
+      account_id: info.account,
+      ammount: info
+    }))
+    .then(unwrapResult).then(deposit => {
+      setInfo({
+        account: null,
+        ammount:null,
+        total_balance: deposit.total_balance
+      })
+      dispatch(refreshAccount(deposit.refresh.accounts))
+      dispatch(removeError())
+    }).catch((error) => {
+      alert(error.message)
+      dispatch(addError(error))
+    })
+  }
+
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -32,39 +87,48 @@ export default function Deposits() {
                         margin="normal"
                         required
                         fullWidth
-                        id="account"
+                        id="brooker"
                         label="Brooker"
-                        name="account"
+                        name="brooker"
                         autoFocus
                         />
+                        <Grid item xs={12}>
+                          <InputLabel shrink id="demo-simple-select-placeholder-label-label">
+                            Choose account
+                          </InputLabel>
+                          <Select
+                            fullWidth
+                            name="account"
+                            label="Select Strategy"
+                            onChange={handleChange}
+                            formControlProps={{ fullWidth: true }}
+                          >
+                          {/* Polulate whith strategy name and id */}
+                            {profile.data.accounts.map(account => 
+                              <MenuItem value={account._id}>{account.account_name}</MenuItem>
+                            )} 
+                          </Select>
+                        </Grid>
                         <TextField className={classes.input}
                         variant="outlined"
                         margin="normal"
                         required
                         fullWidth
-                        id="account"
-                        label="Account"
-                        name="account"
-                        autoFocus
-                        />
-                        <TextField className={classes.input}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="Amount"
+                        name="ammount"
                         label="Amount"
                         type="text"
-                        id="Amount"
+                        value={info.ammount}
+                        onChange={handleChange}
                         />
-                        <h3>Deposit: $100</h3>
-                        <h3>Total Balance: $1100</h3>
+                        <h3>Deposit: ${info.ammount}</h3>
+                        <h3>Total Balance: ${info.total_balance}</h3>
                         <Button
                         type="submit"
                         fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        onClick={handleDeposit}
                         >
                         Deposit
                         </Button>

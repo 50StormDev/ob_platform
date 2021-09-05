@@ -3,11 +3,14 @@ import { apiCallGet } from "../../services/api";
 
 const initialState = {
     data: {
-    id: null,
-    totalBalance: null,
-    totalProfit: null,
-    total_loss: null,
-    total_win: null
+        id:"",
+        withdraw_list:[],
+        accounts:[],
+        total_win: 0,
+        total_loss: 0,
+        totalBalance:0,
+        totalProfit:0,
+        notification:[]
     },
     status: ""
 }
@@ -23,10 +26,25 @@ export const getProfile = createAsyncThunk(
 const routerSlice = createSlice({
     name: 'router',
     initialState,
-    reducer:{
+    reducers:{
         populate: (state, action) => {
-            state.data = action
+            const { withdraw_list, accounts, total_win, total_loss, totalBalance, totalProfit, notification} = action.payload
+            
+            state.data = {
+                id: action.payload._id,
+                accounts,
+                withdraw_list, 
+                total_win, 
+                total_loss, 
+                totalBalance, 
+                totalProfit, 
+                notification
+            }
             state.status = "fullfield"
+        },
+        refreshAccount: (state, action) => {
+            state.data.accounts = action.payload
+            state.status = "fullfied"
         }
     },
     extraReducers:{
@@ -42,6 +60,6 @@ const routerSlice = createSlice({
     }
 })
 
-export const { populate } = routerSlice.actions
+export const { populate, refreshAccount } = routerSlice.actions
 
 export default routerSlice.reducer

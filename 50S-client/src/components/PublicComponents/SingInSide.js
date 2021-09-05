@@ -15,6 +15,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import landingIMG from '../../img/login.jpg';
 import Copyright from '../Copyright';
 import { setCurrentUser } from '../../store/reducers/currentUser';
+import { populate } from '../../store/reducers/profileReducer'
 import { addError, removeError } from '../../store/reducers/error';
 
 const useStyles = makeStyles((theme) => ({
@@ -65,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 // Setup the SignInSide component
 export function SignInSide() {
   const classes = useStyles();
-  const user = useSelector(state => state.user)
+  const profile = useSelector(state => state.profile)
   const dispatch = useDispatch();
   // instantiate the state
   const [info, setInfo] = useState({
@@ -94,7 +95,7 @@ export function SignInSide() {
       input: info
     }))
     .then(unwrapResult).then((pbj) => {
-      console.log({login: pbj})
+      try{ dispatch(populate(pbj.foundTradingProfile))} catch(e){console.log(e)}
       dispatch(removeError())
       dispatch(push("/Trading"))
     }).catch((error) => {
