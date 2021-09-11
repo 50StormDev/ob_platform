@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Assets = {
     "currencies": [
         "AUD/CAD OTC",

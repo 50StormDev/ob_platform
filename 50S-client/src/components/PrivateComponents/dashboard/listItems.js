@@ -30,7 +30,6 @@ function MainListItems() {
 
   
   useEffect(()=> {
-    console.log(logoutClicked)
     if(logoutClicked.current) {
       localStorage.clear()
       dispatch(logout())

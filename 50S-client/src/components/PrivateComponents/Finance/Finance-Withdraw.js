@@ -38,7 +38,6 @@ export default function Withdraw() {
     const { name, value } = e.target
     if(name==='account'){
       let total = profile.data.accounts.filter(item => item._id === value)
-      console.log(total)
         setInfo(prev => {
       return {
         ...prev, 

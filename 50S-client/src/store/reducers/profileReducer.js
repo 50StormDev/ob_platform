@@ -52,7 +52,8 @@ const routerSlice = createSlice({
             state.status = "pending"
         },
         [getProfile.fulfilled]: (state, {payload}) => {
-            state.data = payload;
+            
+            state.data = payload.trading_profile[0];
             state.status = "fullfield"
         }, 
         [getProfile.rejected]: (state) =>

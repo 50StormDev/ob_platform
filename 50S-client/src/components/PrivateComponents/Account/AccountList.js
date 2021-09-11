@@ -1,5 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { useDispatch } from 'react-redux';
+import { changePath } from '../../../store/reducers/Account';
 import Divider from '@material-ui/core/Divider';
 import AccountItem from './AccountItem';
 import { useSelector } from 'react-redux';
@@ -25,12 +27,21 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SelectedListItem() {
   const classes = useStyles();
+  const dispatch = useDispatch()
   const profile = useSelector(state => state.profile)
   const [selectedIndex, setSelectedIndex] = React.useState(1);
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
   };
+
+  function handleGoBack(){
+    dispatch(changePath(""))
+  }
+
+  function handleCreate(){
+    dispatch(changePath("create"))
+  }
 
   return (
     <div className={classes.root}>
@@ -55,8 +66,19 @@ export default function SelectedListItem() {
             variant="contained"
             color="primary"
             type="submit"
+            onClick={handleGoBack}
         >
-            Create Account
+            go back
+        </Button> 
+      </Grid>
+      <Grid item style={{ marginTop: 16 }}>
+        <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            onClick={handleCreate}
+        >
+           Create Account
         </Button> 
       </Grid>
       

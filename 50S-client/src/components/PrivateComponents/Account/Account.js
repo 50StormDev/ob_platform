@@ -1,14 +1,15 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import backImage from '../../../img/mountain1.jpg';
 import Navbar from '../Navbar'
 import Copyright from '../../Copyright';
-import {useSelector } from 'react-redux';
+import {useSelector, useDispatch } from 'react-redux';
 import AccountForm from './AccountForm';
 import AccountBrookers from './AccountBrookers';
 import AccountList from './AccountList'
+import { changePath } from '../../../store/reducers/Account';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,8 +47,10 @@ export default function Account() {
   const classes = useStyles();
 
   const account = useSelector(state => state.account)
-
-
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(changePath(""))
+  }, [dispatch])
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -58,9 +61,9 @@ export default function Account() {
             
 
             {account.path ==="" && <AccountBrookers/>}
-
-            <AccountList/>
-            <AccountForm/>
+            {account.path !=="" &&  <AccountList/>}
+            {account.path ==="create" && <AccountForm/>}
+            
             <Copyright style={{color:"white"}}/>
         </Container>
       </main>

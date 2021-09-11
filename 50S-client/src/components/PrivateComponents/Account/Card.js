@@ -35,7 +35,7 @@ export default function BrookerCard(props) {
   const dispatch = useDispatch();
   function chooseBrooker(){
     
-    dispatch(changePath())
+    dispatch(changePath(props.brooker_name))
   }
   return (
     <Card className={classes.root}>

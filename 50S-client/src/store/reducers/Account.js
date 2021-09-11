@@ -53,7 +53,7 @@ const accountSlice = createSlice({
     initialState,
     reducers: {
         changePath: (state, action) => {
-            state.path = action 
+            state.path = action.payload
         }
     },
     extraReducers:{

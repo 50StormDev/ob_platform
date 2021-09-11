@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createAccount } from '../../../store/reducers/Account';
+import { changePath, createAccount } from '../../../store/reducers/Account';
 import { addError, removeError } from '../../../store/reducers/error';
 import { refreshAccount } from '../../../store/reducers/profileReducer';
 import { unwrapResult } from '@reduxjs/toolkit';
@@ -43,7 +43,6 @@ export default function AccountForm() {
   }
 
   function handleRisk(event, newValue){
-    console.log(newValue)
     setAccount(prevInfo => {
       return {
         ...prevInfo,
@@ -62,6 +61,7 @@ export default function AccountForm() {
     .then(unwrapResult).then((accountList) => {
       try{ dispatch(refreshAccount(accountList))} catch(e){console.log(e)}
       dispatch(removeError())
+      dispatch(changePath("created"))
     }).catch((error) => {
       alert(error.message)
       dispatch(addError(error))

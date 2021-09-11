@@ -80,7 +80,7 @@ exports.createAccount = async function (req, res, next){
         let foundStrategy = await db.Strategy.findById(strategy_id)
         foundStrategy.strategy_users.push(account.id)
         await foundStrategy.save()
-        await foundProfile.populate('accounts','account_name balance').execPopulate()
+        await foundProfile.populate('accounts').execPopulate()
 
         return res.status(201).json(foundProfile.accounts)
     } catch (err){
@@ -99,7 +99,7 @@ exports.deposit = async function(req, res, next){
         foundAccount.balance = balance
         await foundAccount.save();
         let foundProfile = await db.TradingProfile.findById(req.params.profile_id)
-        await foundProfile.populate('accounts','account_name balance').execPopulate()
+        await foundProfile.populate('accounts').execPopulate()
 
         return res.status(200).json({ total_balance:foundAccount.balance, refresh:foundProfile, res: `Your balance is now ${foundAccount.balance}$`})
     } catch (e){
@@ -118,7 +118,7 @@ exports.withdraw = async function(req, res, next){
         foundAccount.balance = balance
         await foundAccount.save();
         let foundProfile = await db.TradingProfile.findById(req.params.profile_id)
-        await foundProfile.populate('accounts','account_name balance').execPopulate()
+        await foundProfile.populate('accounts').execPopulate()
 
         return res.status(200).json({ total_balance:foundAccount.balance, refresh:foundProfile, res: `Your balance is now ${foundAccount.balance}$`})
     } catch (e){
@@ -134,7 +134,7 @@ exports.remove = async function(req, res, next){
         let foundAccount = await db.Account.findById(req.params.account_id);
         await foundAccount.remove();
         let foundTradingProfile = await db.TradingProfile.findById(req.params.profile_id)
-        await foundTradingProfile.populate('accounts','account_name balance').execPopulate()
+        await foundTradingProfile.populate('accounts').execPopulate()
         return res.status(200).json({list:foundTradingProfile.accounts, res: `${foundAccount.name} deleted!`})
     } catch (e){
         return next({

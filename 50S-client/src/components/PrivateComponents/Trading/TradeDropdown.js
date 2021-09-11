@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { MenuItem, Grid, InputLabel, Select, Divider} from '@material-ui/core';
 
 const useStyles = makeStyles({
     selection: {
@@ -15,26 +13,31 @@ const useStyles = makeStyles({
 
 export default function TradeDropdown(props){
     const classes = useStyles();    
-    
-
     return (
         <div className={classes.selection}>
             <InputLabel id="demo-controlled-open-select-label">{props.title}</InputLabel>
-            <Select
-                labelId="demo-controlled-open-select-label"
+            <Grid item xs={12}>
+                <InputLabel shrink id="demo-simple-select-placeholder-label-label">
+                Choose account
+                </InputLabel>
+                <Select
                 fullWidth
-                id="demo-controlled-open-select"
-                // open={open}
-                // onClose={handleClose}
-                // onOpen={handleOpen}
-                // value={age}
-                // onChange={handleChange}
-            >
-                <MenuItem value="">
-                <em>None</em>
-                </MenuItem>
-                <MenuItem></MenuItem>
-            </Select>
+                name="account"
+                label="Select Strategy"
+                
+                formControlProps={{ fullWidth: true }}
+                >
+                {/* Polulate whith strategy name and id */}
+                {props.items.currencies.map(item => 
+                    <MenuItem value={item}>{item}</MenuItem>
+                )}
+                <Divider/>
+                {props.items.commodities.map(item => 
+                    <MenuItem value={item}>{item}</MenuItem>
+                )
+                }
+                </Select>
+            </Grid>
         </div>
     )
 }

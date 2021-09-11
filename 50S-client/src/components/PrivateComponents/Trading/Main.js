@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {useEffect} from 'react';
+import { useDispatch, useSelector} from 'react-redux';
+import { changePath } from '../../../store/reducers/Account';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
@@ -33,6 +35,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard() {
   const classes = useStyles();
+  const account = useSelector(state => state.account)
+  const dispatch = useDispatch()
+  // useEffect(() => {
+  //   dispatch(changePath(""))
+  // }, [dispatch])
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -40,8 +47,8 @@ export default function Dashboard() {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-            <AccountBrookers/>
-            <Trade/>
+            {account.path === "" && <AccountBrookers/>}
+            {account.path !== "" && <Trade/>}
             <Copyright style={{color:"white"}}/>
         </Container>
       </main>
