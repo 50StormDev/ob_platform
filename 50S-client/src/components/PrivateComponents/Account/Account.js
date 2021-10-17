@@ -44,8 +44,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Account() {
+  // css
   const classes = useStyles();
-
+  // get the 
   const account = useSelector(state => state.account)
   const dispatch = useDispatch()
   useEffect(() => {
@@ -58,12 +59,9 @@ export default function Account() {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-            
-
             {account.path ==="" && <AccountBrookers/>}
             {account.path !=="" &&  <AccountList/>}
             {account.path ==="create" && <AccountForm/>}
-            
             <Copyright style={{color:"white"}}/>
         </Container>
       </main>

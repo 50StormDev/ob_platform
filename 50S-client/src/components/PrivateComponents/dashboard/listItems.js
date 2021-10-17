@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef }from 'react';
 import { useDispatch } from 'react-redux';
-import { logout } from '../../../store/reducers/currentUser';
 import { push } from 'connected-react-router';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -32,7 +31,6 @@ function MainListItems() {
   useEffect(()=> {
     if(logoutClicked.current) {
       localStorage.clear()
-      dispatch(logout())
       dispatch(push("/SignInSide"))
     } else {
       logoutClicked.current = true

@@ -18,8 +18,9 @@ export const setCurrentUser = createAsyncThunk(
     async({action, path, input}) => {
         const response = apiCall("post", `${path}/api/auth/${action}`, input)
         .then(
-            ({token, ...data}) => {
+            ({token, today, ...data}) => {
                 localStorage.setItem("jwtToken", token);
+                localStorage.setItem("today", today)
                 setAuthorization(token);
                 return data
             })
@@ -38,12 +39,7 @@ export const hasAccess = createAsyncThunk(
 const userSlice = createSlice({
     name: 'user',
     initialState,
-    reducers: {
-        logout(state){
-           state.isAuthenticated = false
-           state.user = {}
-        }
-    },
+    
     extraReducers: {
         [setCurrentUser.pending]: (state) => {
            state.call = "pending"

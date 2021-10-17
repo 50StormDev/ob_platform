@@ -16,6 +16,24 @@ const initialState = {
     request:""
 }
 
+
+//calculate
+// function life(balance){
+//   if(balance <= 10){
+//     if(balance < 1){
+//       return count
+//     }
+//     count++
+//     balance--
+//     life(balance)
+//   } else {
+//   count++
+//   balance = balance - (balance/10)
+//   life(balance)
+//   }
+// }
+
+
 export const createAccount = createAsyncThunk(
     'account/create',
     async({path, profile_id, brooker_id, input}) => {

@@ -17,6 +17,7 @@ import Copyright from '../Copyright';
 import { setCurrentUser } from '../../store/reducers/currentUser';
 import { populate } from '../../store/reducers/profileReducer'
 import { addError, removeError } from '../../store/reducers/error';
+import { setStrategies } from '../../store/reducers/strategyReducer';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -94,8 +95,11 @@ export function SignInSide() {
       path: "http://localhost:5000", 
       input: info
     }))
-    .then(unwrapResult).then((pbj) => {
-      try{ dispatch(populate(pbj.foundTradingProfile))} catch(e){console.log(e)}
+    .then(unwrapResult).then((response) => {
+      try{ 
+        dispatch(populate(response.foundTradingProfile))
+        dispatch(setStrategies(response.strategies))
+      } catch(e){console.log(e)}
       dispatch(removeError())
       dispatch(push("/Trading"))
     }).catch((error) => {

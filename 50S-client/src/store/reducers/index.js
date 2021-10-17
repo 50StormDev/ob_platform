@@ -5,6 +5,8 @@ import userReducer from "./currentUser";
 import errorReducer from './error';
 import profileReducer from './profileReducer';
 import accountReducer from './Account'
+import strategyReducer from './strategyReducer'
+import orderReducer from './oderReducer'
 
 
 const rootReducer = combineReducers({
@@ -12,6 +14,8 @@ const rootReducer = combineReducers({
     currentUser: userReducer,
     error: errorReducer,
     profile: profileReducer,
-    account: accountReducer
+    account: accountReducer,
+    strategyList: strategyReducer,
+    orders: orderReducer
 })
 export default rootReducer;

@@ -4,14 +4,17 @@ import { MenuItem, Grid, InputLabel, Select, Divider} from '@material-ui/core';
 
 const useStyles = makeStyles({
     selection: {
-        background: "#d8d8d8",
+        background: "#ffff",
         margin: "14px 0"
     }
 });
 
-
-
 export default function TradeDropdown(props){
+
+    function handleChange(e){
+        const { value } = e.target
+        props.handlePair(value)
+    }
     const classes = useStyles();    
     return (
         <div className={classes.selection}>
@@ -24,7 +27,8 @@ export default function TradeDropdown(props){
                 fullWidth
                 name="account"
                 label="Select Strategy"
-                
+                required
+                onChange={handleChange}
                 formControlProps={{ fullWidth: true }}
                 >
                 {/* Polulate whith strategy name and id */}

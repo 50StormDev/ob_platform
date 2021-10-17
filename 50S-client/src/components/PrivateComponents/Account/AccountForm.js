@@ -16,11 +16,10 @@ import {
   Slider,
   InputLabel
 } from '@material-ui/core';
-
-
 export default function AccountForm() {
   const dispatch = useDispatch()
   const profile = useSelector(state => state.profile)
+  const strategyList = useSelector(state => state.strategyList)
   const [account, setAccount] = useState({
     account_name: "",
     target: 0,
@@ -59,7 +58,7 @@ export default function AccountForm() {
       input: account
     }))
     .then(unwrapResult).then((accountList) => {
-      try{ dispatch(refreshAccount(accountList))} catch(e){console.log(e)}
+      try{ dispatch(refreshAccount(accountList.profile))} catch(e){console.log(e)}
       dispatch(removeError())
       dispatch(changePath("created"))
     }).catch((error) => {
@@ -108,10 +107,9 @@ export default function AccountForm() {
                   onChange={handleChangeAccount}
                   formControlProps={{ fullWidth: true }}
                 >
-                {/* Polulate whith strategy name and id */}
-                  <MenuItem value="2X1 - 10%">2X1</MenuItem>
-                  <MenuItem value="4x2">4X2</MenuItem>
-                  <MenuItem value="createStrategy">
+                {strategyList.strategies.map(strategy => <MenuItem value={strategy.strategy_name}>{strategy.strategy_name}</MenuItem>)
+                }
+                  <MenuItem value="createStrategy" style={{backgroundColor:"green"}}>
                     Add Strategy
                   </MenuItem>
                 </Select>

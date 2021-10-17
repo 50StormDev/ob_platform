@@ -50,7 +50,7 @@ export default function SelectedListItem() {
             Accounts
         </Typography>
       <List component="nav" aria-label="main mailbox folders">
-      {profile.data.accounts.map(item =>
+      { profile.data.accounts.map(item =>
         <React.Fragment>
           <AccountItem id={item._id} name={item.account_name} balance={item.balance}/>
           <Divider/>

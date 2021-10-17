@@ -30,9 +30,7 @@ exports.createAccount = async function (req, res, next){
         } else {
             // Found the strategy and push user to strategy_users 
             let foundStrategy = await db.Strategy.find({strategy_name:req.body.strategy})
-            console.log(foundStrategy)
             strategy_id = foundStrategy[0].id
-            console.log(strategy_id)
         }
         let account = await db.Account.create({
             account_name: req.body.account_name,
@@ -71,18 +69,23 @@ exports.createAccount = async function (req, res, next){
         await foundBrooker.save();
 
         let foundAccount = await db.Account.findById(account._id);
-        await foundAccount.populate('strategy', 'strategy_name risk').execPopulate()
-        console.log(foundAccount.strategy)
-        console.log(foundAccount.populated('strategy'))
+        await foundAccount.populate(
+            {path: 'strategy',
+            select: 'consecutive_loss max_loss max_win risk'
+        }
+            ).execPopulate()
+        
         await foundAccount.save()
 
         // Find Strategy and add this user to the strategy user list 
         let foundStrategy = await db.Strategy.findById(strategy_id)
         foundStrategy.strategy_users.push(account.id)
         await foundStrategy.save()
-        await foundProfile.populate('accounts').execPopulate()
+        await foundProfile.populate(
+            {path: 'accounts'
+        }).execPopulate()
 
-        return res.status(201).json(foundProfile.accounts)
+        return res.status(201).json({ profile: foundProfile.accounts, strategy: foundStrategy})
     } catch (err){
         return next({
             status: 500,
@@ -132,10 +135,11 @@ exports.withdraw = async function(req, res, next){
 exports.remove = async function(req, res, next){
     try {
         let foundAccount = await db.Account.findById(req.params.account_id);
+        
         await foundAccount.remove();
         let foundTradingProfile = await db.TradingProfile.findById(req.params.profile_id)
         await foundTradingProfile.populate('accounts').execPopulate()
-        return res.status(200).json({list:foundTradingProfile.accounts, res: `${foundAccount.name} deleted!`})
+        return res.status(200).json({list:foundTradingProfile.accounts, res: `${foundAccount.account_name} deleted!`})
     } catch (e){
         return next({
             status: 500,

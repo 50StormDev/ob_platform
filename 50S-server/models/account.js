@@ -78,12 +78,12 @@ accountSchema.pre("remove", async function(next){
     try {
         let brooker = await Brooker.findById(this.brooker);
         //remove the brooker from tradingProfile
-        brooker.account_list.remove(this.id);
+        await brooker.account_list.remove(this.id);
         // save tradingProfile
         await brooker.save();
 
         let foundUser = await mongoose.model('TradingProfile').findById(this.trading_profile);
-        foundUser.accounts.remove(this.id);
+        await foundUser.accounts.remove(this.id);
         await user.save()
         return next();
     } catch(err) {
