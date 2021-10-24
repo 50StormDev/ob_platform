@@ -6,8 +6,12 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { TextField, Select } from '@material-ui/core';
 import Divider from '@material-ui/core/Divider';
+
 import {
   Typography,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
   Paper,
   Grid,
   Button,
@@ -22,23 +26,80 @@ export default function AccountForm() {
   const strategyList = useSelector(state => state.strategyList)
   const [account, setAccount] = useState({
     account_name: "",
-    target: 0,
+    target: null,
     strategy: "",
     strategy_name: "",
-    max_loss: 0,
-    max_win: 0,
-    consecutive_loss: 0,
-    risk: 5
+    profit: null, 
+    stop: null,
+    max_loss: null,
+    max_win: null,
+    weekly_risk: null,
+    risk: 5,
+    radio:"",
+    max_profit:0
   })
-  
+  const soros = (entry, payout, rep) => {
+    let initial = entry
+    for(let i = 0; i < rep; i++){
+      entry = entry * ((payout / 100) + 1)
+    }
+    return Math.round(( entry - initial) * 100 ) /100
+  }
   function handleChangeAccount(e){
-    const {name, value} = e.target
-    setAccount(prevInfo => {
-      return {
-        ...prevInfo,
-        [name]: value
-      };
-    })
+    let {name, value} = e.target
+    if(value < 0){
+      value = 0
+      setAccount(prevInfo => {
+        return {
+          ...prevInfo,
+          [name]: value
+        };
+      })
+    } else {
+      setAccount(prevInfo => {
+        return {
+          ...prevInfo,
+          [name]: value
+        };
+      })
+    }
+    if(value === "soros"){
+      let rep = account.profit / account.max_win
+      let remain = (account.profit % account.max_win) * account.risk
+      let result = 0
+      let entry = account.risk
+      for (let i = 0; i < rep; i++){
+        entry = soros(entry, 80, account.max_win)
+      }
+      result = entry + remain
+      setAccount(prevInfo => {
+        return {
+          ...prevInfo,
+          max_profit: result
+        };
+      })
+    } else if(value === "mao"){
+      let result = account.risk * 0.8 * account.profit
+      setAccount(prevInfo => {
+        return {
+          ...prevInfo,
+          max_profit: result
+        };
+      })
+    } else if(value === "fixo"){
+      let result = account.risk
+      for(let i = 0; i < account.profit; i++){
+        let add = Math.round(( result * 0.8) * 100 ) /100
+        result += add
+        
+      }
+      setAccount(prevInfo => {
+        return {
+          ...prevInfo,
+          max_profit: Math.round(result * 100) /100
+        };
+      })
+    }
   }
 
   function handleRisk(event, newValue){
@@ -46,6 +107,14 @@ export default function AccountForm() {
       return {
         ...prevInfo,
         risk: newValue
+      }
+    })
+  }
+  function handleWeeklyRisk(event, newValue){
+    setAccount(prevInfo => {
+      return {
+        ...prevInfo,
+            weekly_risk: newValue
       }
     })
   }
@@ -67,6 +136,7 @@ export default function AccountForm() {
     })
 
   }
+  
   return (
     <div style={{ padding: 16, margin: 'auto', maxWidth: 600 }}>
       <CssBaseline />
@@ -116,10 +186,12 @@ export default function AccountForm() {
               </Grid>
               {(account.strategy === "createStrategy") &&  
                 <React.Fragment>
-                  <Divider/>
-                  <Typography variant="h4" align="center" component="h1" gutterBottom>
-                  Create Strategy
-                  </Typography>
+                  <Grid item xs={12}>
+                    <Divider style={{marginTop:"20px"}}/>
+                    <Typography style={{marginTop:"20px", marginBottom:"0"}} variant="h4" align="center" component="h1" gutterBottom>
+                    Create Strategy
+                    </Typography>
+                  </Grid>
                   <Grid item xs={12}>
                     <TextField
                       fullWidth
@@ -132,31 +204,24 @@ export default function AccountForm() {
                   <Grid item xs={6}>
                     <TextField
                       fullWidth
-                      name="max_loss"
+                      name="stop"
                       type="number"
-                      label="Max Loss"
+                      label="Stop"
+                      value={account.stop}
                       onChange={handleChangeAccount}
                     />
                   </Grid>
                   <Grid item xs={6}>
                     <TextField
                       fullWidth
-                      name="max_win"
+                      name="profit"
                       type="number"
-                      label="Max Win"
+                      label="Profit"
+                      value={account.profit}
                       onChange={handleChangeAccount}
                     />
                   </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      fullWidth
-                      name="consecutive_loss"
-                      type="number"
-                      label="Consecutive Loss"
-                      onChange={handleChangeAccount}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                       <Typography id="discrete-slider" gutterBottom>
                           Risk {account.risk}%
                       </Typography>
@@ -172,7 +237,52 @@ export default function AccountForm() {
                           onChange={handleRisk}
                       />
                   </Grid>
-
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      name="max_loss"
+                      type="number"
+                      label="Max Loss"
+                      value={account.max_loss}
+                      onChange={handleChangeAccount}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      name="max_win"
+                      type="number"
+                      label="Max Win"
+                      value={account.max_win}
+                      onChange={handleChangeAccount}
+                    />
+                  </Grid>
+                  
+                  <Grid item xs={8}>
+                  <RadioGroup row aria-label="gender" name="row-radio-buttons-group" onChange={handleChangeAccount}>
+                    <FormControlLabel name="radio" value="soros" control={<Radio />} label="Soros" />
+                    <FormControlLabel name="radio" value="mao" control={<Radio />} label="Mão Fixa" />
+                    <FormControlLabel name="radio" value="fixo" control={<Radio />} label="Juros Fixo" />
+                  </RadioGroup>
+                  {}
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Typography id="discrete-slider" gutterBottom>
+                          Weekly Risk {account.weekly_risk} steps
+                      </Typography>
+                      <Slider
+                        defaultValue={2}
+                          aria-labelledby="discrete-slider"
+                          valueLabelDisplay="auto"
+                          name="weekly_risk"
+                          step={1}
+                          marks
+                          min={1}
+                          max={5}
+                          onChange={handleWeeklyRisk}
+                      />
+                  </Grid>
+                  <h1>Maximo ganho: {account.max_profit}%</h1>
                 </React.Fragment>
               }
 

@@ -18,7 +18,6 @@ export default function TradeDropdown(props){
     const classes = useStyles();    
     return (
         <div className={classes.selection}>
-            <InputLabel id="demo-controlled-open-select-label">{props.title}</InputLabel>
             <Grid item xs={12}>
                 <InputLabel shrink id="demo-simple-select-placeholder-label-label">
                 Choose account

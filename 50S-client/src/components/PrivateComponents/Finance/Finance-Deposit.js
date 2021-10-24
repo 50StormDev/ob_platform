@@ -29,7 +29,7 @@ export default function Deposits() {
   const profile = useSelector(state => state.profile)
   const [info, setInfo] = useState({
     account: null,
-    ammount: null,
+    ammount: 0,
     total_balance: 0
   })
 
@@ -64,7 +64,7 @@ export default function Deposits() {
     .then(unwrapResult).then(deposit => {
       setInfo({
         account: null,
-        ammount:null,
+        ammount:0,
         total_balance: deposit.total_balance
       })
       dispatch(refreshAccount(deposit.refresh.accounts))
@@ -79,62 +79,50 @@ export default function Deposits() {
   return (
     <React.Fragment>
       <Container maxWidth="sm" className={classes.mainContent}>
-                    <form className={classes.form} noValidate>
-                        <h1 style={{margin:'0', marginBottom: '25px'}}>Deposit</h1>
-                        <TextField className={classes.input}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="brooker"
-                        label="Brooker"
-                        name="brooker"
-                        autoFocus
-                        />
-                        <Grid item xs={12}>
-                          <InputLabel shrink id="demo-simple-select-placeholder-label-label">
-                            Choose account
-                          </InputLabel>
-                          <Select
-                            fullWidth
-                            name="account"
-                            label="Select Strategy"
-                            onChange={handleChange}
-                            formControlProps={{ fullWidth: true }}
-                          >
-                          {/* Polulate whith strategy name and id */}
-                            {profile.data.accounts.map(account => 
-                              <MenuItem value={account._id}>{account.account_name}</MenuItem>
-                            )} 
-                          </Select>
-                        </Grid>
-                        <TextField className={classes.input}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="ammount"
-                        label="Amount"
-                        type="text"
-                        value={info.ammount}
-                        onChange={handleChange}
-                        />
-                        <h3>Deposit: ${info.ammount}</h3>
-                        <h3>Total Balance: ${info.total_balance}</h3>
-                        <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                        onClick={handleDeposit}
-                        >
-                        Deposit
-                        </Button>
-                        <Grid container>
-                        </Grid>
-                    </form>
-                </Container>
+        <form className={classes.form} noValidate>
+          <h1 style={{margin:'0', marginBottom: '25px'}}>Deposit</h1>
+          <Grid item xs={12}>
+            <InputLabel shrink id="demo-simple-select-placeholder-label-label">
+              Choose account
+            </InputLabel>
+            <Select
+              fullWidth
+              name="account"
+              label="Select Strategy"
+              onChange={handleChange}
+              formControlProps={{ fullWidth: true }}
+            >
+            {/* Polulate whith strategy name and id */}
+              {profile.data.accounts.map(account => 
+                <MenuItem value={account._id}>{account.account_name}</MenuItem>
+              )} 
+            </Select>
+          </Grid>
+          <TextField className={classes.input}
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          name="ammount"
+          label="Amount"
+          type="text"
+          value={info.ammount}
+          onChange={handleChange}
+          />
+          <h3>Deposit: ${info.ammount}</h3>
+          <h3>Total Balance: ${info.total_balance}</h3>
+          <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+          onClick={handleDeposit}
+          >
+          Deposit
+          </Button>
+        </form>
+      </Container>
     </React.Fragment>
   );
 }

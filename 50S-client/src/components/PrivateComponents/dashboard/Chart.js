@@ -9,11 +9,21 @@ function createData(time, amount) {
 }
 
 const data = [
-  createData('1', 0),
-  createData('2', 300),
-  createData('3', 600),
-  createData('4', -200),
+  // createData('1', 0),
+  // createData('2', 300),
+  // createData('3', 600),
+  // createData('4', -200),
 ];
+var days = function(month,year) {
+         return new Date(year, month, 0).getDate();
+      }
+for(let i = 0; i < days(7, 2021); i++){
+  let r = i
+  if(i > 10 && i < 20){
+    r = 0
+  }
+  data.push(createData(i, r))
+}
 
 export default function Chart() {
   const theme = useTheme();

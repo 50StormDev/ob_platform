@@ -17,12 +17,12 @@ export default function DayLimit(props) {
     const classes = useStyles();
     return(
         <Box component='div'>
-            <Grid spacing={2}>
-                <Grid item xs={12} sm={6}>
-                    <div className={classes.profit}>Profit ${props.profit}</div>
+            <Grid container spacing={2}>
+                <Grid item xs={6} sm={6}>
+                    <h3 className={classes.profit}>Profit ${props.profit}</h3>
                 </Grid>
-                <Grid item xs={12} sm={6} >
-                    <div className={classes.loss}>Stop Loss: ${props.loss}</div>
+                <Grid item xs={6} sm={6} >
+                    <h3 className={classes.loss}>Stop: ${props.loss}</h3>
                 </Grid>
             </Grid>
             
