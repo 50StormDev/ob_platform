@@ -25,6 +25,7 @@ function Routes() {
                 <PrivateRoute component={Main} path="/Trading" exact />
                 <PrivateRoute component={Finance} path="/Finance" exact />
                 <PrivateRoute component={Account} path="/Account" exact />
+                <PublicRoute component={SignInSide} path="/" exact/>
                 <Route>
                 </Route>
             </Switch>

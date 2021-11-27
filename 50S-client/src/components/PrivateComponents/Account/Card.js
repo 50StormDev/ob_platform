@@ -12,19 +12,20 @@ import { changePath } from '../../../store/reducers/Account';
 
 
 const useStyles = makeStyles({
-  root: {
-    width: "220px",
-    textAlign: 'center'
-    
+  logo: {
+    width: '240px',
+    height: '240px',
+    textAlign: 'center',
+    background: '#3f43624f',
+    borderRadius: '45px',
+    border: '1px solid',
+    borderColor: '#0000007d'
   },
   media: {
-    height: 140,
-    margin: "15px",
-    display: "block",
-    backgroundSize: "contain",
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "center",
-  },
+    height: '200px',
+    width: '200px',
+    margin: "8%",
+  }
 });
 
 export default function BrookerCard(props) {
@@ -38,18 +39,21 @@ export default function BrookerCard(props) {
     dispatch(changePath(props.brooker_name))
   }
   return (
-    <Card className={classes.root}>
+    <Card className={classes.logo}>
       <CardActionArea  onClick={chooseBrooker}>
         <CardMedia
           className={classes.media}
           image={props.brooker_img}
           title="Contemplative Reptile"
         />
-        <CardContent>
+        <svg>
+
+        </svg>
+        {/* <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
             {props.brooker_name}
           </Typography>
-        </CardContent>
+        </CardContent> */}
       </CardActionArea>
     </Card>
   );

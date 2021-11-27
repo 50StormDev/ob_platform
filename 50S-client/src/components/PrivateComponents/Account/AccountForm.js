@@ -179,9 +179,6 @@ export default function AccountForm() {
                 >
                 {strategyList.strategies.map(strategy => <MenuItem value={strategy.strategy_name}>{strategy.strategy_name}</MenuItem>)
                 }
-                  <MenuItem value="createStrategy" style={{backgroundColor:"green"}}>
-                    Add Strategy
-                  </MenuItem>
                 </Select>
               </Grid>
               {(account.strategy === "createStrategy") &&  
@@ -285,7 +282,7 @@ export default function AccountForm() {
                   <h1>Maximo ganho: {account.max_profit}%</h1>
                 </React.Fragment>
               }
-
+              
               <Grid item style={{ marginTop: 16 }}>
                 <Button
                   variant="contained"
