@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import clsx from 'clsx';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -110,6 +110,13 @@ export default function Deposits() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const [clockState, setClockState] = useState();
+  useEffect(() => {
+    setInterval(() => {
+      const date = new Date();
+      setClockState(date.toLocaleTimeString());
+    }, 1000)
+  }, [])
   return (
     <React.Fragment>
         <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
@@ -125,6 +132,9 @@ export default function Deposits() {
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             50 Storm Platform
+          </Typography>
+          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+            {clockState}
           </Typography>
           <IconButton color="inherit">
             <Badge badgeContent={notification.length} color="secondary">
