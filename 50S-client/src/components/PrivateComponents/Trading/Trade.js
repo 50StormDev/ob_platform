@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'; 
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -9,6 +9,7 @@ import TradeDropdown from './TradeDropdown';
 import Assets from '../../../assets';
 import { MenuItem, Grid, InputLabel, Select, Divider } from '@material-ui/core';
 import { addOrder } from '../../../store/reducers/oderReducer';
+var moment = require('moment')
 
 const useStyles = makeStyles({
   depositContext: {
@@ -30,6 +31,15 @@ export default function Trade() {
   const profile = useSelector(state => state.profile)
   const strategyList = useSelector(state => state.strategyList)
   const orders = useSelector(state => state.orders)
+
+  const [clockState, setClockState] = useState({now: ""});
+  useEffect(() => {
+    setInterval(() => {
+      let now = new Date();
+      let dnow = moment(new Date()).toObject()
+      setClockState({now: now.toLocaleTimeString()})
+    }, 1000)
+  }, [])
 
   // get the account list to be display
   let account_list = profile.data.accounts
@@ -200,8 +210,10 @@ export default function Trade() {
     <React.Fragment>
       <Container maxWidth="sm" className={classes.mainContent}>
         <form className={classes.form} noValidate>
-          <Grid item xs={12}>
+          <Grid item xs={12} style={{display:'flex'}}>
               <h1 style={{margin:'0', marginBottom:'25px', padding: '0'}}>Trade</h1>
+              <h2 style={{margin:'0', marginBottom:'25px', padding: '0'}}>{clockState.now}
+              </h2>
             </Grid>
           <Grid
             style={{marginBottom: "20px"}}

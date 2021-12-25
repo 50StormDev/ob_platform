@@ -4,7 +4,7 @@ import Container from '@material-ui/core/Container';
 import PocketOption_img from '../../../img/Pocket.svg'
 import HighLow_img from '../../../img/HighLow.svg'
 import Quotex_img from '../../../img/Quotex.svg'
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, Typography } from '@material-ui/core';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +35,11 @@ export default function AccountBrookers(props) {
    
     return (
         <React.Fragment>
+            <Typography className={classes.header_text} variant="h4" align="center" component="h1" >
+               Choose your Brooker
+              </Typography>
             <Container className={classes.brookers}>
+              
               <Card className={classes.brooker_logo} brooker_img= {PocketOption_img} brooker_name="PocketOption"/>
               <Card className={classes.brooker_logo} brooker_img= {HighLow_img} brooker_name="HighLow"/>
               <Card className={classes.brooker_logo} brooker_img= {Quotex_img} brooker_name="Quotex"/>

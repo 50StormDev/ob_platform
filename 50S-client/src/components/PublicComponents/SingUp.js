@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import SignUpImage from '../../img/singup1.jpeg';
-import Copyright from '../Copyright';
+import Copyright from '../PrivateComponents/Main/Copyright';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { addError } from '../../store/reducers/error';
 import { getProfile, populate } from '../../store/reducers/profileReducer';
@@ -35,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundImage:  `url(${SignUpImage})`,
     position: 'absolute',
     width: '100%',
-    height: "100%",
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundPositionY: 'top'
@@ -108,7 +107,7 @@ export default function SignUp() {
       })).then(unwrapResult).then((user) => {
         dispatch(getProfile(user.id))
         try{ dispatch(populate(user.tradingProfile))} catch(e){console.log(e)}
-        dispatch(push("/Trading"))
+        dispatch(push("/Main"))
       }).catch((e)=>{
         alert(e.message)
         dispatch(addError(e))
@@ -236,10 +235,10 @@ export default function SignUp() {
               </Link>
             </Grid>
           </Grid>
-          <Copyright style={{color:"#424242"}} />
         </form>
+        
       </div>
-      
+      <Copyright style={{color:"#424242"}} />
     </Container>
     </div>
   );

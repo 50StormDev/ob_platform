@@ -1,33 +1,31 @@
 import React, {useEffect, useState} from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { push } from 'connected-react-router';
 import clsx from 'clsx';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
+import Menu from './listItems';
+import { makeStyles } from '@material-ui/core/styles';
+import PocketOption_img from '../../../img/Pocket.svg'
+import HighLow_img from '../../../img/HighLow.svg'
+import Quotex_img from '../../../img/Quotex.svg'
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import Typography from '@material-ui/core/Typography';
-import Menu from './dashboard/listItems';
-import { makeStyles } from '@material-ui/core/styles';
-import backImage from '../../img/mountain1.jpg';
-import { useSelector } from 'react-redux';
+import {
+  Drawer,
+  AppBar,
+  Toolbar,
+  List,
+  Divider,
+  IconButton, 
+  Badge,
+  Typography
+} from '@material-ui/core'
+
+var moment = require('moment')
 
 const drawerWidth = 190;
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-    display: 'flex',
-    backgroundImage: `url(${backImage})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundPositionY: 'top',
-    height:'100%',
-    width: '100%',
-  },
   toolbar: {
     paddingRight: 24, // keep right padding when drawer closed
   },
@@ -97,12 +95,18 @@ const useStyles = makeStyles((theme) => ({
   },
   fixedHeight: {
     height: 190,
+  },
+  brooker: {
+    height: "2em",
+    width: "2em"
   }
 }));
 
-export default function Deposits() {
+export default function Navbar() {
   const classes = useStyles();
-  const notification = useSelector(state => state.currentUser.notification)
+  const dispatch = useDispatch();
+  const currentUser = useSelector(state => state.currentUser)
+  const notification = currentUser.notification
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -110,13 +114,34 @@ export default function Deposits() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const [clockState, setClockState] = useState();
+  const [clockState, setClockState] = useState({now:"", ends: moment(new Date()).add(30, 'm')});
   useEffect(() => {
     setInterval(() => {
-      const date = new Date();
-      setClockState(date.toLocaleTimeString());
+      var now = moment(new Date()); //todays date
+      var end = clockState.ends;
+      var duration = moment.duration(end.diff(now));
+        setClockState(prev => {
+          return {
+            ...prev,
+            now: `${duration._data.hours}:${duration._data.minutes}:${duration._data.seconds}`
+          }
+        })
     }, 1000)
-  }, [])
+  }, [])  
+
+  const brooker = () => {
+    switch (currentUser.brooker) {
+      case "PocketOption":
+        return PocketOption_img
+      case "HighLow":
+        return HighLow_img
+      case "Quotex":
+        return Quotex_img
+      default:
+        break;
+    }
+  }
+
   return (
     <React.Fragment>
         <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
@@ -134,8 +159,11 @@ export default function Deposits() {
             50 Storm Platform
           </Typography>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            {clockState}
+            {clockState.now}
           </Typography>
+          <IconButton onClick={()=> dispatch(push("/Main"))}>
+            <img className={classes.brooker} alt={currentUser.brooker} src={brooker()}/>
+          </IconButton>
           <IconButton color="inherit">
             <Badge badgeContent={notification.length} color="secondary">
               <NotificationsIcon />

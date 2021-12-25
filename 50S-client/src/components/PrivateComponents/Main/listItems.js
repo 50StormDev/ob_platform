@@ -8,6 +8,7 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import DonutSmallIcon from '@material-ui/icons/DonutSmall';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { makeStyles } from '@material-ui/core/styles';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -49,6 +50,12 @@ function MainListItems() {
             <DashboardIcon className={classes.icon}/>
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
+        </ListItem>
+        <ListItem button className={classes.menu_link} onClick={()=> dispatch(push("/Salary"))}>
+          <ListItemIcon>
+            <CalendarTodayIcon className={classes.icon}/>
+          </ListItemIcon>
+          <ListItemText primary="Salary" />
         </ListItem>
         <ListItem button className={classes.menu_link} onClick={()=> dispatch(push("/Trading"))}>
           <ListItemIcon>

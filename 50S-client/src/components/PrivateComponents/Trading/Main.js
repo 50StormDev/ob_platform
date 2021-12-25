@@ -1,57 +1,57 @@
-import React, {useEffect} from 'react';
-import { useDispatch, useSelector} from 'react-redux';
-import { changePath } from '../../../store/reducers/Account';
+import React, {useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Container from '@material-ui/core/Container';
-import backImage from '../../../img/mountain1.jpg';
+import { useDispatch } from 'react-redux';
+import { changePath } from '../../../store/reducers/Account';
+import Divider from '@material-ui/core/Divider';
 import Trade from './Trade';
-import Navbar from '../Navbar'
-import Copyright from '../../Copyright';
-import AccountBrookers from '../Account/AccountBrookers';
+import TradingItem from './TradingAccountItem';
+import { useSelector } from 'react-redux';
+import {
+  Typography,
+  Paper,
+  List,
+  Button, 
+  Grid
+  
+} from '@material-ui/core';
 
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
-    backgroundImage: `url(${backImage})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundPositionY: 'top',
-    height:'100%',
-    width: '100%',
+    margin: '100px',
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: '3px'
   },
-  appBarSpacer: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    height: '100vh',
-    overflow: 'auto'
-  },
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-  }
 }));
 
-export default function Dashboard() {
+export default function SelectedListItem() {
   const classes = useStyles();
-  const account = useSelector(state => state.account)
   const dispatch = useDispatch()
-  // useEffect(() => {
-  //   dispatch(changePath(""))
-  // }, [dispatch])
+  const profile = useSelector(state => state.profile)
+  const [trade, setTrade] = useState({status:false})
+  
+  function openTrade(){
+    setTrade({status:true})
+  }
+
   return (
     <div className={classes.root}>
-      <CssBaseline />
-      <Navbar/>
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
-            {account.path === "" && <AccountBrookers/>}
-            {account.path !== "" && <Trade/>}
-            <Copyright style={{color:"white"}}/>
-        </Container>
-      </main>
+    {trade.status === false ? <Paper style={{ padding: 16 }}>
+        <Typography variant="h4" align="center" component="h1" gutterBottom>
+            Accounts
+        </Typography>
+      <List component="nav" aria-label="main mailbox folders">
+      { profile.data.accounts.map(item =>
+        <React.Fragment>
+          <TradingItem openTrade={openTrade} id={item._id} name={item.account_name} balance={item.status}/>
+          <Divider/>
+        </React.Fragment>
+        )
+      }
+      </List>  
+    </Paper> : <Trade/>
+    }
     </div>
   );
 }
+

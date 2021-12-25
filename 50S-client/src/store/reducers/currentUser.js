@@ -2,12 +2,18 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { apiCall, setTokenHeader } from "../../services/api";
 const initialState = {
     isAuthenticated: false, // credential
+    brooker:"PocketOption",
+    entryTime: "",
     user: {},   // user data
     call: null, // status of api request
     notification: [], //message and read
     withdraw_list:[] // list of brookers avaiavle for withdraw
 }
 
+function setTime(){
+    new Date().toLocaleString()
+    return 
+}
 // set the authoriation token to the header
 export function setAuthorization(token) {
     setTokenHeader(token);
@@ -39,7 +45,11 @@ export const hasAccess = createAsyncThunk(
 const userSlice = createSlice({
     name: 'user',
     initialState,
-    
+    reducers: {
+        setBrooker: (state, action) => {
+            state.brooker = action.payload
+        }
+    },
     extraReducers: {
         [setCurrentUser.pending]: (state) => {
            state.call = "pending"
@@ -55,13 +65,14 @@ const userSlice = createSlice({
         },
         [hasAccess.fulfilled]: (state, {payload}) => {
             state.isAuthenticated = true
+            state.entryTime = setTime()
             state.user = payload
         }
     }
     
 });
 
-export const { logout } = userSlice.actions
+export const { setBrooker } = userSlice.actions
 
 export const currentUserSelector = state => state.user
 export default userSlice.reducer;

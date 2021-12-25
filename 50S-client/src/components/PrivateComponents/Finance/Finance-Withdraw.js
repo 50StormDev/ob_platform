@@ -13,16 +13,31 @@ import { Select } from '@material-ui/core';
 import { MenuItem, InputLabel } from '@material-ui/core';
 import { refreshAccount } from '../../../store/reducers/profileReducer';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   depositContext: {
     flex: 1,
   },
   mainContent: {
-    background: "white",
+    background: "#fff",
     opacity: "1",
     marginTop: "60px",
-    padding: "57px"}
-});
+    padding: "35px",
+    borderRadius: "10px"
+  },
+  form: {
+    width: '90%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+    padding: '7px 15px 15px',
+    borderRadius: "3px",
+  },
+  backgroundSide: {
+    background: '#353535',
+    opacity: '0.9',
+  },
+  input: {
+    background: '#fff'
+  },
+}));
 
 export default function Withdraw() {
   const classes = useStyles();
@@ -30,7 +45,7 @@ export default function Withdraw() {
   const profile = useSelector(state => state.profile)
   const [info, setInfo] = useState({
     account: null,
-    ammount: null,
+    ammount: 0,
     total_balance: 0
   })
 

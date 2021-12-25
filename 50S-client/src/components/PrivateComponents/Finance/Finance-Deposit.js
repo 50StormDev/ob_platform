@@ -13,17 +13,35 @@ import { Select } from '@material-ui/core';
 import { MenuItem, InputLabel } from '@material-ui/core';
 import { refreshAccount } from '../../../store/reducers/profileReducer';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   depositContext: {
     flex: 1,
   },
   mainContent: {
-    background: "white",
+    background: "#ffff",
     opacity: "1",
     marginTop: "60px",
-    padding: "57px"}
-});
+    padding: "35px",
+    borderRadius: "10px"
+  },
+  form: {
+    width: '90%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+    padding: '7px 15px 15px',
+    borderRadius: "3px",
+  },
+  backgroundSide: {
+    background: '#353535',
+    opacity: '0.9',
+  },
+  input: {
+    background: '#ffff'
+  },
+}));
 
+// function to assist to round the prices
+  const round = (number) =>  {return Math.round(number * 100) / 100}
+  
 export default function Deposits() {
   const dispatch = useDispatch()
   const profile = useSelector(state => state.profile)
@@ -39,7 +57,8 @@ export default function Deposits() {
       let total = profile.data.accounts.filter(item => item._id === value)
         setInfo(prev => {
       return {
-        ...prev, 
+        ...prev,
+        ammount:0, 
         [name]: value,
       total_balance: total[0].balance
       };
@@ -48,7 +67,8 @@ export default function Deposits() {
     setInfo(prev => {
       return {
         ...prev, 
-      [name]: value
+      [name]: value,
+      
       };
     });
   }
@@ -62,17 +82,19 @@ export default function Deposits() {
       ammount: info
     }))
     .then(unwrapResult).then(deposit => {
-      setInfo({
-        account: null,
-        ammount:0,
+      setInfo(prev => {
+        return {
+        account: prev.account,
+        ammount: 0,
         total_balance: deposit.total_balance
-      })
+      }})
       dispatch(refreshAccount(deposit.refresh.accounts))
       dispatch(removeError())
     }).catch((error) => {
       alert(error.message)
       dispatch(addError(error))
     })
+    
   }
 
   const classes = useStyles();
@@ -109,8 +131,9 @@ export default function Deposits() {
           value={info.ammount}
           onChange={handleChange}
           />
+          <h3>Balance: ${info.total_balance}</h3>
           <h3>Deposit: ${info.ammount}</h3>
-          <h3>Total Balance: ${info.total_balance}</h3>
+          <h3>Total Balance: ${parseFloat(info.total_balance) + parseFloat(info.ammount)}</h3>
           <Button
           type="submit"
           fullWidth

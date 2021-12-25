@@ -9,8 +9,6 @@ import {
   Typography,
   Paper,
   List,
-  ListItem,
-  ListItemText,
   Button, 
   Grid
   
@@ -58,19 +56,7 @@ export default function SelectedListItem() {
         
         )
       }
-        
-        
       </List>
-      <Grid item style={{ marginTop: 16 }}>
-        <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            onClick={handleGoBack}
-        >
-            go back
-        </Button> 
-      </Grid>
       <Grid item style={{ marginTop: 16 }}>
         <Button
             variant="contained"

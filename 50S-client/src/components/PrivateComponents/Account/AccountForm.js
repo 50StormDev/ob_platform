@@ -4,22 +4,19 @@ import { addError, removeError } from '../../../store/reducers/error';
 import { refreshAccount } from '../../../store/reducers/profileReducer';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
-import { TextField, Select } from '@material-ui/core';
-import Divider from '@material-ui/core/Divider';
-
 import {
-  Typography,
-  FormControlLabel,
-  RadioGroup,
-  Radio,
-  Paper,
-  Grid,
-  Button,
-  CssBaseline,
   MenuItem,
-  Slider,
+  CssBaseline,
+  Button,
+  Paper,
+  TextField,
+  Select,
+  Typography,
+  Grid,
   InputLabel
 } from '@material-ui/core';
+import AccountStrategy from './AccountStrategy';
+
 export default function AccountForm() {
   const dispatch = useDispatch()
   const profile = useSelector(state => state.profile)
@@ -38,13 +35,22 @@ export default function AccountForm() {
     radio:"",
     max_profit:0
   })
+
+  // round the values
+  const round = (number) => {
+    return Math.round(number * 100) / 100
+  }
+
+  // calculate soros
   const soros = (entry, payout, rep) => {
     let initial = entry
     for(let i = 0; i < rep; i++){
       entry = entry * ((payout / 100) + 1)
     }
-    return Math.round(( entry - initial) * 100 ) /100
+    return round(( entry - initial) * 100 ) /100
   }
+  
+
   function handleChangeAccount(e){
     let {name, value} = e.target
     if(value < 0){
@@ -72,6 +78,7 @@ export default function AccountForm() {
         entry = soros(entry, 80, account.max_win)
       }
       result = entry + remain
+      result = round(result)
       setAccount(prevInfo => {
         return {
           ...prevInfo,
@@ -80,6 +87,7 @@ export default function AccountForm() {
       })
     } else if(value === "mao"){
       let result = account.risk * 0.8 * account.profit
+      result = round(result)
       setAccount(prevInfo => {
         return {
           ...prevInfo,
@@ -87,12 +95,12 @@ export default function AccountForm() {
         };
       })
     } else if(value === "fixo"){
-      let result = account.risk
-      for(let i = 0; i < account.profit; i++){
-        let add = Math.round(( result * 0.8) * 100 ) /100
+      let result = round(account.risk * 0.8)  
+      for(let i = 1; i < account.profit; i++){
+        let add = result * 0.8
         result += add
-        
       }
+      result = round(result)
       setAccount(prevInfo => {
         return {
           ...prevInfo,
@@ -136,9 +144,17 @@ export default function AccountForm() {
     })
 
   }
+  function handleCreateStrategy(){
+    setAccount(prevInfo => {
+      return {
+        ...prevInfo,
+        strategy: "createStrategy"
+      }
+    })
+  }
   
   return (
-    <div style={{ padding: 16, margin: 'auto', maxWidth: 600 }}>
+    <div style={{ padding: 40, margin: 'auto', maxWidth: 700 }}>
       <CssBaseline />
         <form>
           <Paper style={{ padding: 16 }}>
@@ -180,107 +196,23 @@ export default function AccountForm() {
                 {strategyList.strategies.map(strategy => <MenuItem value={strategy.strategy_name}>{strategy.strategy_name}</MenuItem>)
                 }
                 </Select>
+                {(account.strategy !== "createStrategy") && <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  onClick={handleCreateStrategy}
+                >
+                  Create Custom Strategy
+                </Button>
+                }
               </Grid>
               {(account.strategy === "createStrategy") &&  
-                <React.Fragment>
-                  <Grid item xs={12}>
-                    <Divider style={{marginTop:"20px"}}/>
-                    <Typography style={{marginTop:"20px", marginBottom:"0"}} variant="h4" align="center" component="h1" gutterBottom>
-                    Create Strategy
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      name="strategy_name"
-                      type="text"
-                      label="Strategy Name"
-                      onChange={handleChangeAccount}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      fullWidth
-                      name="stop"
-                      type="number"
-                      label="Stop"
-                      value={account.stop}
-                      onChange={handleChangeAccount}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      fullWidth
-                      name="profit"
-                      type="number"
-                      label="Profit"
-                      value={account.profit}
-                      onChange={handleChangeAccount}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                      <Typography id="discrete-slider" gutterBottom>
-                          Risk {account.risk}%
-                      </Typography>
-                      <Slider
-                        defaultValue={5}
-                          aria-labelledby="discrete-slider"
-                          valueLabelDisplay="auto"
-                          name="risk"
-                          step={1}
-                          marks
-                          min={1}
-                          max={20}
-                          onChange={handleRisk}
-                      />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      fullWidth
-                      name="max_loss"
-                      type="number"
-                      label="Max Loss"
-                      value={account.max_loss}
-                      onChange={handleChangeAccount}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      fullWidth
-                      name="max_win"
-                      type="number"
-                      label="Max Win"
-                      value={account.max_win}
-                      onChange={handleChangeAccount}
-                    />
-                  </Grid>
-                  
-                  <Grid item xs={8}>
-                  <RadioGroup row aria-label="gender" name="row-radio-buttons-group" onChange={handleChangeAccount}>
-                    <FormControlLabel name="radio" value="soros" control={<Radio />} label="Soros" />
-                    <FormControlLabel name="radio" value="mao" control={<Radio />} label="Mão Fixa" />
-                    <FormControlLabel name="radio" value="fixo" control={<Radio />} label="Juros Fixo" />
-                  </RadioGroup>
-                  {}
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Typography id="discrete-slider" gutterBottom>
-                          Weekly Risk {account.weekly_risk} steps
-                      </Typography>
-                      <Slider
-                        defaultValue={2}
-                          aria-labelledby="discrete-slider"
-                          valueLabelDisplay="auto"
-                          name="weekly_risk"
-                          step={1}
-                          marks
-                          min={1}
-                          max={5}
-                          onChange={handleWeeklyRisk}
-                      />
-                  </Grid>
-                  <h1>Maximo ganho: {account.max_profit}%</h1>
-                </React.Fragment>
+                <AccountStrategy
+                  account={account}
+                  handleChangeAccount={handleChangeAccount}
+                  handleRisk={handleRisk}
+                  handleWeeklyRisk={handleWeeklyRisk}
+                />
               }
               
               <Grid item style={{ marginTop: 16 }}>
@@ -299,75 +231,3 @@ export default function AccountForm() {
     </div>
   );
 }
-
-                // <Grid item>
-                //   <FormControl component="fieldset">
-                //     <FormLabel component="legend">Best Stooge</FormLabel>
-                //     <RadioGroup row aria-label="gender" name="gender1" >
-                //         <FormControlLabel value="female" control={<Radio />} label="Female" />
-                //         <FormControlLabel value="male" control={<Radio />} label="Male" />
-                //         <FormControlLabel value="other" control={<Radio />} label="Other" />
-                //         <FormControlLabel value="disabled" disabled control={<Radio />} label="(Disabled option)" />
-                //     </RadioGroup>
-                //   </FormControl>
-                // </Grid>
-                // <Grid item>
-                //   <FormControl component="fieldset">
-                //     <FormLabel component="legend">Sauces</FormLabel>
-                //     <FormGroup row>
-                //       <FormControlLabel
-                //         label="Ketchup"
-                //         control={
-                //           <Field
-                //             name="sauces"
-                //             component={Checkbox}
-                //             type="checkbox"
-                //             value="ketchup"
-                //           />
-                //         }
-                //       />
-                //       <FormControlLabel
-                //         label="Mustard"
-                //         control={
-                //           <Field
-                //             name="sauces"
-                //             component={Checkbox}
-                //             type="checkbox"
-                //             value="mustard"
-                //           />
-                //         }
-                //       />
-                //       <FormControlLabel
-                //         label="Salsa"
-                //         control={
-                //           <Field
-                //             name="sauces"
-                //             component={Checkbox}
-                //             type="checkbox"
-                //             value="salsa"
-                //           />
-                //         }
-                //       />
-                //       <FormControlLabel
-                //         label="Guacamole 🥑"
-                //         control={
-                //           <Field
-                //             name="sauces"
-                //             component={Checkbox}
-                //             type="checkbox"
-                //             value="guacamole"
-                //           />
-                //         }
-                //       />
-                //     </FormGroup>
-                //   </FormControl>
-                // </Grid>
-                // <Grid item xs={12}>
-                //   <Field
-                //     fullWidth
-                //     name="notes"
-                //     component={TextField}
-                //     multiline
-                //     label="Notes"
-                //   />
-                // </Grid>

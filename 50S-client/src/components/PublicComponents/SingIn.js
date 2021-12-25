@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { push } from 'connected-react-router';
 import Button from '@material-ui/core/Button';
@@ -13,7 +13,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import landingIMG from '../../img/login.jpg';
-import Copyright from '../Copyright';
+import Copyright from '../PrivateComponents/Main/Copyright';
 import { setCurrentUser } from '../../store/reducers/currentUser';
 import { populate } from '../../store/reducers/profileReducer'
 import { addError, removeError } from '../../store/reducers/error';
@@ -65,9 +65,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // Setup the SignInSide component
-export function SignInSide() {
+export function SignIn() {
   const classes = useStyles();
-  const profile = useSelector(state => state.profile)
   const dispatch = useDispatch();
   // instantiate the state
   const [info, setInfo] = useState({
@@ -179,4 +178,4 @@ export function SignInSide() {
   );
 }
 
-export default SignInSide;
+export default SignIn;

@@ -1,12 +1,13 @@
 
 import React, {useEffect} from 'react';
 import { Route } from 'react-router-dom';
-import { setAuthorization, logout, hasAccess } from './../store/reducers/currentUser'
+import { setAuthorization, hasAccess } from './../store/reducers/currentUser'
 import { push } from 'connected-react-router';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 import jwtDecode from 'jwt-decode';
 import { getProfile, populate } from '../store/reducers/profileReducer'
+import { changePath } from '../store/reducers/Account';
 
 
 const PublicRoute = ({component: Component, ...rest}) => {
@@ -25,6 +26,7 @@ const PublicRoute = ({component: Component, ...rest}) => {
             dispatch(hasAccess(jwtDecode(personalToken))).then(unwrapResult).then((user) => {
             dispatch(getProfile(user.id)).then(unwrapResult).then(profile => {
                 dispatch(populate(profile.trading_profile[0]))
+                dispatch(changePath("PocketOption"))
             })
             dispatch(push("/Trading"))
             })
