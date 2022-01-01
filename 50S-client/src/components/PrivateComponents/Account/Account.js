@@ -33,8 +33,8 @@ export default function Account() {
   return (
     <React.Fragment>
       <Container maxWidth="lg" className={classes.container}>
-        {currentUser.brooker !=="" &&  <AccountList/>}
-        {account.path ==="create" && <AccountForm/>}
+        {currentUser.brooker !=="" &&  <AccountList create={account.path}/>}
+        {account.path === "create" && <AccountForm/>}
       </Container>
     </React.Fragment>
         

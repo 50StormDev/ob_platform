@@ -20,7 +20,11 @@ exports.createAccount = async function (req, res, next){
                     max_loss: req.body.max_loss,
                     max_win: req.body.max_win,
                     consecutive_loss: req.body.consecutive_loss,
+                    consecutive_win: req.body.consecutive_win,
                     risk: req.body.risk,
+                    weekly_risk: req.body.weekly_risk,
+                    otc: req.body.otc,
+                    method: req.body.method,
                     strategy_users:[]
                 })
                 strategy_id = createStrategy.id
@@ -98,17 +102,37 @@ exports.deposit = async function(req, res, next){
     try {
         let foundAccount = await db.Account.findById(req.params.account_id);
         let balance = Number(foundAccount.balance) + Number(req.body.ammount)
-        console.log(typeof(balance))
         foundAccount.balance = balance
         await foundAccount.save();
         let foundProfile = await db.TradingProfile.findById(req.params.profile_id)
         await foundProfile.populate('accounts').execPopulate()
+        let foundTransactionProfile = await db.Transaction.findOne({trading_profile: req.params.profile_id})
+        if(!foundTransactionProfile){
+
+            let firstDeposit = await db.Transaction.create({
+                trading_profile: req.params.profile_id,
+                transaction_history:[{
+                    transaction_day: req.body.day,
+                    transaction_action: "Deposit",
+                    transaction_account: req.params.account_id,
+                    transaction_ammount: req.body.ammount
+                }]
+            })
+        } else {
+            foundTransactionProfile.transaction_history.push({
+                transaction_day: req.body.day,
+                transaction_action: "Deposit",
+                transaction_account: req.params.account_id,
+                transaction_ammount: req.body.ammount
+            })
+            await foundTransactionProfile.save()
+        }
 
         return res.status(200).json({ total_balance:foundAccount.balance, refresh:foundProfile, res: `Your balance is now ${foundAccount.balance}$`})
     } catch (e){
         return next({
             status: 500,
-            message: "Failed to Deposit Account"
+            message: e.message
         })
     }
 }
@@ -122,12 +146,45 @@ exports.withdraw = async function(req, res, next){
         await foundAccount.save();
         let foundProfile = await db.TradingProfile.findById(req.params.profile_id)
         await foundProfile.populate('accounts').execPopulate()
+        let foundTransactionProfile = await db.Transaction.findOne({trading_profile: req.params.profile_id})
+        if(!foundTransactionProfile){
+
+            let firstDeposit = await db.Transaction.create({
+                trading_profile: req.params.profile_id,
+                transaction_history:[{
+                    transaction_day: req.body.day,
+                    transaction_action: "Withdraw",
+                    transaction_account: req.params.account_id,
+                    transaction_ammount: req.body.ammount
+                }]
+            })
+        } else {
+            foundTransactionProfile.transaction_history.push({
+                transaction_day: req.body.day,
+                transaction_action: "Withdraw",
+                transaction_account: req.params.account_id,
+                transaction_ammount: req.body.ammount
+            })
+            await foundTransactionProfile.save()
+        }
 
         return res.status(200).json({ total_balance:foundAccount.balance, refresh:foundProfile, res: `Your balance is now ${foundAccount.balance}$`})
     } catch (e){
         return next({
             status: 500,
             message: "Failed to Withdraw Account"
+        })
+    }
+}
+
+exports.history = async function(req, res, next){
+    try {
+        let foundTransactionProfile = await db.Transaction.findOne({trading_profile: req.params.profile_id})
+        return res.status(200).json({history:foundTransactionProfile.transaction_history})
+    } catch(e) {
+        return next({
+            status: 500,
+            message: e.message
         })
     }
 }

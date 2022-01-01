@@ -13,7 +13,7 @@ import {
   Select,
   Typography,
   Grid,
-  InputLabel
+  InputLabel,
 } from '@material-ui/core';
 import AccountStrategy from './AccountStrategy';
 
@@ -22,18 +22,19 @@ export default function AccountForm() {
   const profile = useSelector(state => state.profile)
   const strategyList = useSelector(state => state.strategyList)
   const [account, setAccount] = useState({
-    account_name: "",
-    target: null,
-    strategy: "",
-    strategy_name: "",
-    profit: null, 
-    stop: null,
-    max_loss: null,
-    max_win: null,
-    weekly_risk: null,
-    risk: 5,
-    radio:"",
-    max_profit:0
+    account_name: "", // name of the account
+    target: 0,  // how much wants to achive
+    strategy: "", // strategy name if use one of the list
+    strategy_name: "",  // name of the new strategy
+    max_loss: 1, // set up the stop loss
+    max_win: 1, // set up take profit
+    consecutive_loss: 1,  // max consecutive loss, probably use in OTC market
+    consecutive_win: 1, // consecutive win to set up breakpoint in soros (should appers when the method is soros)
+    risk: 5,  // the percentage of risk per day 
+    weekly_risk: 2, // set up stop loss of the week
+    method:"",  // what method it will be used
+    max_profit:0, // calculate the max percentage per method to be compared
+    otc: false // if this account will be traded on weekends or not
   })
 
   // round the values
@@ -50,6 +51,7 @@ export default function AccountForm() {
     return round(( entry - initial) * 100 ) /100
   }
   
+  // calculate how many lives until bankrupt
 
   function handleChangeAccount(e){
     let {name, value} = e.target
@@ -70,12 +72,12 @@ export default function AccountForm() {
       })
     }
     if(value === "soros"){
-      let rep = account.profit / account.max_win
-      let remain = (account.profit % account.max_win) * account.risk
+      let rep = account.max_win / account.consecutive_win
+      let remain = (account.max_win % account.consecutive_win) * account.risk
       let result = 0
       let entry = account.risk
       for (let i = 0; i < rep; i++){
-        entry = soros(entry, 80, account.max_win)
+        entry = soros(entry, 80, account.consecutive_win)
       }
       result = entry + remain
       result = round(result)
@@ -86,7 +88,7 @@ export default function AccountForm() {
         };
       })
     } else if(value === "mao"){
-      let result = account.risk * 0.8 * account.profit
+      let result = account.risk * 0.8 * account.max_win
       result = round(result)
       setAccount(prevInfo => {
         return {
@@ -96,7 +98,7 @@ export default function AccountForm() {
       })
     } else if(value === "fixo"){
       let result = round(account.risk * 0.8)  
-      for(let i = 1; i < account.profit; i++){
+      for(let i = 1; i < account.max_win; i++){
         let add = result * 0.8
         result += add
       }
@@ -152,6 +154,15 @@ export default function AccountForm() {
       }
     })
   }
+
+  function handleOTC(){
+    setAccount(prevInfo => {
+      return {
+        ...prevInfo,
+        otc: !prevInfo.otc
+      }
+    })
+  }
   
   return (
     <div style={{ padding: 40, margin: 'auto', maxWidth: 700 }}>
@@ -161,7 +172,7 @@ export default function AccountForm() {
               <Typography variant="h4" align="center" component="h1" gutterBottom>
               Create Account
               </Typography>
-            <Grid container alignItems="flex-start" spacing={2}>
+            <Grid container alignItems="flex-start" spacing={3}>
               <Grid item xs={6}>
                 <TextField
                   fullWidth
@@ -182,40 +193,53 @@ export default function AccountForm() {
                   onChange={handleChangeAccount}
                 />
               </Grid>
-              <Grid item xs={12}>
-                <InputLabel shrink id="demo-simple-select-placeholder-label-label">
-                  Strategy
-                </InputLabel>
-                <Select
-                  fullWidth
-                  name="strategy"
-                  label="Select Strategy"
-                  onChange={handleChangeAccount}
-                  formControlProps={{ fullWidth: true }}
-                >
-                {strategyList.strategies.map(strategy => <MenuItem value={strategy.strategy_name}>{strategy.strategy_name}</MenuItem>)
-                }
-                </Select>
-                {(account.strategy !== "createStrategy") && <Button
+              {(account.strategy !== "createStrategy") && 
+              <Grid item xs={12} style={{display: "flex", justifyContent: "space-between"}}>
+                <Grid item xs={6}>
+                  <InputLabel shrink id="demo-simple-select-placeholder-label-label">
+                    Strategy
+                  </InputLabel>
+                  <Select
+                    fullWidth
+                    name="strategy"
+                    label="Select Strategy"
+                    onChange={handleChangeAccount}
+                    formControlProps={{ fullWidth: true }}
+                  >
+                  {strategyList.strategies.map(strategy => <MenuItem value={strategy.strategy_name}>{strategy.strategy_name}</MenuItem>)
+                  }
+                  </Select>
+                </Grid>
+                <Grid item xs={5}bstyrle={{alignSelf:"end"}}>
+                  <Button
                   variant="contained"
                   color="primary"
                   type="submit"
                   onClick={handleCreateStrategy}
-                >
-                  Create Custom Strategy
-                </Button>
-                }
-              </Grid>
+                  >
+                    Create Custom Strategy
+                  </Button>
+                </Grid>
+              </Grid>}
               {(account.strategy === "createStrategy") &&  
                 <AccountStrategy
                   account={account}
                   handleChangeAccount={handleChangeAccount}
                   handleRisk={handleRisk}
                   handleWeeklyRisk={handleWeeklyRisk}
+                  handleOTC={handleOTC}
                 />
               }
               
-              <Grid item style={{ marginTop: 16 }}>
+              <Grid item xs={12} style={{display: "flex", justifyContent: "space-between"}}> 
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  type="submit"
+                  onClick={()=>{dispatch(changePath(""))}}
+                >
+                  Go Back
+                </Button>
                 <Button
                   variant="contained"
                   color="primary"
@@ -228,6 +252,7 @@ export default function AccountForm() {
             </Grid>
           </Paper>
         </form>
+        
     </div>
   );
 }

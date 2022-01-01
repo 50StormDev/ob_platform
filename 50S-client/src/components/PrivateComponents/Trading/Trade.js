@@ -9,6 +9,7 @@ import TradeDropdown from './TradeDropdown';
 import Assets from '../../../assets';
 import { MenuItem, Grid, InputLabel, Select, Divider } from '@material-ui/core';
 import { addOrder } from '../../../store/reducers/oderReducer';
+import { push } from 'connected-react-router';
 var moment = require('moment')
 
 const useStyles = makeStyles({
@@ -142,7 +143,7 @@ export default function Trade() {
     balance += entry * (payout / 100);
     balance = round(balance)
     wins += 1 
-    entry = entry + soros(entry, payout, wins)
+    entry = round(entry + soros(entry, payout, wins))
     
     dispatch(addOrder({
       date:localStorage.today,
@@ -174,7 +175,7 @@ export default function Trade() {
       balance -= entry;
       balance = Math.round(balance *100)/100
       entry = Math.round((balance/10)*100)/100
-      losses　+= 1;
+      losses += 1;
       dispatch(addOrder({
         date:localStorage.today,
         account: order.name,
@@ -330,9 +331,17 @@ export default function Trade() {
               
               
               </Grid>
+              
             </Container>
           }
-        </form>
+        </form><Button
+                onClick={()=> {
+                  dispatch(push("/Trade"))
+                  }}
+                variant="contained"
+                color="primary"
+                value="back"
+                >Go Back</Button>
       </Container>
     </React.Fragment>
   );

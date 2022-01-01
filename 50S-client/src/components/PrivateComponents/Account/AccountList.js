@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SelectedListItem() {
+export default function SelectedListItem(props) {
   const classes = useStyles();
   const dispatch = useDispatch()
   const profile = useSelector(state => state.profile)
@@ -57,7 +57,7 @@ export default function SelectedListItem() {
         )
       }
       </List>
-      <Grid item style={{ marginTop: 16 }}>
+      {props.create !== "create" && <Grid item style={{ marginTop: 16 }}>
         <Button
             variant="contained"
             color="primary"
@@ -66,7 +66,7 @@ export default function SelectedListItem() {
         >
            Create Account
         </Button> 
-      </Grid>
+      </Grid>}
       
     </Paper>
     </div>

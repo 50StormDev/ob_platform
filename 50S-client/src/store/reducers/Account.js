@@ -33,6 +33,13 @@ const initialState = {
 //   }
 // }
 
+export const getHistory = createAsyncThunk(
+    'account/getHistory',
+    async({path, profile_id}) => {
+        const response = apiCall("get", `${path}/${profile_id}/history`)
+        return response    
+    }
+) 
 
 export const createAccount = createAsyncThunk(
     'account/create',
@@ -93,6 +100,16 @@ const accountSlice = createSlice({
             state.data = payload
         },
         [removeAccount.reject]: (state) => {
+            state.request = "rejected"
+        },
+        [getHistory.pending]:(state) => {
+            state.request = "pending"
+        },
+        [getHistory.fullfield]: (state, {payload}) => {
+            state.request = "fullfield"
+            state.data = payload
+        },
+        [getHistory.reject]: (state) => {
             state.request = "rejected"
         }
     }

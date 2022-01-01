@@ -41,12 +41,15 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Withdraw() {
   const classes = useStyles();
-    const dispatch = useDispatch()
+  const dispatch = useDispatch()
   const profile = useSelector(state => state.profile)
+  let today = new Date()
+  let month = today.getMonth() + 1
   const [info, setInfo] = useState({
     account: null,
     ammount: 0,
-    total_balance: 0
+    total_balance: 0,
+    day:`${today.getDate()}/${month}/${today.getFullYear()}`
   })
 
   function handleChange(e){
@@ -79,11 +82,10 @@ export default function Withdraw() {
     }))
     .then(unwrapResult).then(deposit => {
       setInfo({
-        account: null,
-        ammount:null,
+        account: "",
+        ammount: 0,
         total_balance: deposit.total_balance
       })
-      alert(deposit.res)
       dispatch(refreshAccount(deposit.refresh.accounts))
       dispatch(removeError())
     }).catch((error) => {

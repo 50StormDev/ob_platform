@@ -1,9 +1,13 @@
 import React from 'react';
 import { useSelector} from 'react-redux';
 import { 
-    ListItem,
-    ListItemIcon,
-    ListItemText, Button
+    TableContainer,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    Table,
+     Button
 } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { removeAccount } from '../../../store/reducers/Account';
@@ -31,12 +35,27 @@ export default function AccountItem(props){
     })
   }
     return (
-        <ListItem>
-          <ListItemText primary={props.name} />
-          <ListItemText primary={props.balance}/>
-          <ListItemIcon>
-             <Button onClick={props.openTrade}variant="outlined">Trade</Button>
-          </ListItemIcon>
-        </ListItem>
+      <TableContainer>
+        <Table sx={{ minWidth: 650 }} aria-label="caption table">
+          <TableHead style={{backgroundColor: "#1b1f2f"}}>
+            <TableRow>
+              <TableCell  style={{color: "#fff"}}>Account</TableCell>
+              <TableCell align="left" style={{color: "#fff"}}>Status</TableCell>
+              <TableCell align="left" style={{color: "#fff"}}>Progress</TableCell>
+              <TableCell align="left" style={{color: "#fff"}}>Trade</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {props.profile.map((item) => (
+              <TableRow >
+                <TableCell align="left">{item.account_name}</TableCell>
+                <TableCell align="left">Incomplete</TableCell>
+                <TableCell align="left">20%</TableCell>
+                <TableCell align="left"><Button onClick={props.openTrade}variant="outlined">Trade</Button></TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     )
 }

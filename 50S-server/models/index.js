@@ -33,3 +33,4 @@ module.exports.Brooker = require("./brooker");
 module.exports.Account = require("./account");
 module.exports.Strategy = require("./strategy");
 module.exports.Order = require("./order");
+module.exports.Transaction = require("./transaction")

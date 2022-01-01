@@ -126,6 +126,10 @@ export default function Navbar() {
             now: `${duration._data.hours}:${duration._data.minutes}:${duration._data.seconds}`
           }
         })
+        if(duration._data.hours === 0 && duration._data.minutes === 0 && duration._data.seconds === 0){
+          localStorage.clear()
+          dispatch(push("/SignIn"))
+        }
     }, 1000)
   }, [])  
 

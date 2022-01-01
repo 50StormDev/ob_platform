@@ -18,7 +18,8 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    margin: '100px',
+    margin: '22%',
+    marginTop: "10%",
     backgroundColor: theme.palette.background.paper,
     borderRadius: '3px'
   },
@@ -36,19 +37,12 @@ export default function SelectedListItem() {
 
   return (
     <div className={classes.root}>
-    {trade.status === false ? <Paper style={{ padding: 16 }}>
+    {trade.status === false ? 
+    <Paper style={{ padding: 16 }}>
         <Typography variant="h4" align="center" component="h1" gutterBottom>
             Accounts
         </Typography>
-      <List component="nav" aria-label="main mailbox folders">
-      { profile.data.accounts.map(item =>
-        <React.Fragment>
-          <TradingItem openTrade={openTrade} id={item._id} name={item.account_name} balance={item.status}/>
-          <Divider/>
-        </React.Fragment>
-        )
-      }
-      </List>  
+        <TradingItem openTrade={openTrade} profile={profile.data.accounts}/> 
     </Paper> : <Trade/>
     }
     </div>

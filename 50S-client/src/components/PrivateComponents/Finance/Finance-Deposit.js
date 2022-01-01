@@ -45,10 +45,13 @@ const useStyles = makeStyles((theme) => ({
 export default function Deposits() {
   const dispatch = useDispatch()
   const profile = useSelector(state => state.profile)
+  let today = new Date()
+  let month = today.getMonth() + 1
   const [info, setInfo] = useState({
     account: null,
     ammount: 0,
-    total_balance: 0
+    total_balance: 0,
+    day:`${today.getDate()}/${month}/${today.getFullYear()}`
   })
 
   function handleChange(e){
@@ -79,7 +82,8 @@ export default function Deposits() {
       path:"http://localhost:5000/account",
       profile_id: profile.data.id,
       account_id: info.account,
-      ammount: info
+      ammount: info,
+      day: info.day
     }))
     .then(unwrapResult).then(deposit => {
       setInfo(prev => {

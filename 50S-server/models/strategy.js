@@ -8,22 +8,39 @@ const strategySchema = new mongoose.Schema({
     max_loss: {
         type: Number,
         required: true,
-        min: 0
+        min: 1
     },
     max_win: {
         type: Number,
         require: true,
-        min: 0
+        min: 1
     },
     consecutive_loss: {
         type: Number,
         required: true,
-        min: 0
+        min: 1
+    },
+    consecutive_win: {
+        type: Number,
+        min: 1
     },
     risk: {
         type: Number,
         required: true,
         min: 0
+    },
+    weekly_risk:{
+        type: Number,
+        required: true,
+        min: 1
+    },
+    method: {
+        type: String,
+        required: true
+    },
+    otc: {
+        type: Boolean,
+        required: true
     },
     strategy_users: [{
         type: mongoose.Schema.Types.ObjectId,
