@@ -43,17 +43,14 @@ export default function Withdraw() {
   const classes = useStyles();
   const dispatch = useDispatch()
   const profile = useSelector(state => state.profile)
-  let today = new Date()
-  let month = today.getMonth() + 1
   const [info, setInfo] = useState({
     account: null,
-    ammount: 0,
-    total_balance: 0,
-    day:`${today.getDate()}/${month}/${today.getFullYear()}`
+    amount: 0,
+    total_balance: 0
   })
 
   function handleChange(e){
-    const { name, value } = e.target
+    let { name, value } = e.target
     if(name==='account'){
       let total = profile.data.accounts.filter(item => item._id === value)
         setInfo(prev => {
@@ -63,6 +60,12 @@ export default function Withdraw() {
       total_balance: total[0].balance
       };
     });
+    }
+    // make sure that the user can't withdraw more than total balance of the respective account
+    if(name === 'amount'){
+      if (value > info.total_balance){
+        value = info.total_balance
+      }
     }
     setInfo(prev => {
       return {
@@ -78,12 +81,12 @@ export default function Withdraw() {
       path:"http://localhost:5000/account",
       profile_id: profile.data.id,
       account_id: info.account,
-      ammount: info
+      amount: info
     }))
     .then(unwrapResult).then(deposit => {
       setInfo({
         account: "",
-        ammount: 0,
+        amount: 0,
         total_balance: deposit.total_balance
       })
       dispatch(refreshAccount(deposit.refresh.accounts))
@@ -120,15 +123,15 @@ export default function Withdraw() {
             margin="normal"
             required
             fullWidth
-            name="ammount"
+            name="amount"
             label="Amount"
-            type="text"
-            value={info.ammount}
+            type="number"
+            value={info.amount}
             onChange={handleChange}
             />
             <h3>Total Balance: ${info.total_balance}</h3>
-            <h3>Withdraw: ${info.ammount}</h3>
-            <h3>Remain:{ info.total_balance - info.ammount}</h3>
+            <h3>Withdraw: ${info.amount}</h3>
+            <h3>Remain:{ info.total_balance - info.amount}</h3>
             <Button
             type="submit"
             fullWidth

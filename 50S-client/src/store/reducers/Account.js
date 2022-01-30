@@ -57,18 +57,26 @@ export const removeAccount = createAsyncThunk(
     }
 ) 
 
+export const detailAccount = createAsyncThunk(
+    'account/remove',
+    async({path ,account_id}) => {
+        const response = apiCall("get", `${path}/${account_id}/detail`)
+        return response    
+    }
+) 
+
 export const depositAccount = createAsyncThunk(
     'account/deposit',
-    async({path, profile_id ,account_id, ammount}) => {
-        const response = apiCall("post", `${path}/${profile_id}/${account_id}/deposit`, ammount)
+    async({path, profile_id ,account_id, amount}) => {
+        const response = apiCall("post", `${path}/${profile_id}/${account_id}/deposit`, amount)
         return response    
     }
 ) 
 
 export const withdrawAccount = createAsyncThunk(
     'account/withdraw',
-    async({path, profile_id ,account_id, ammount}) => {
-        const response = apiCall("post", `${path}/${profile_id}/${account_id}/withdraw`, ammount)
+    async({path, profile_id ,account_id, amount}) => {
+        const response = apiCall("post", `${path}/${profile_id}/${account_id}/withdraw`, amount)
         return response    
     }
 ) 
@@ -110,6 +118,16 @@ const accountSlice = createSlice({
             state.data = payload
         },
         [getHistory.reject]: (state) => {
+            state.request = "rejected"
+        },
+        [detailAccount.pending]:(state) => {
+            state.request = "pending"
+        },
+        [detailAccount.fullfield]: (state, {payload}) => {
+            state.request = "fullfield"
+            state.data = payload
+        },
+        [detailAccount.reject]: (state) => {
             state.request = "rejected"
         }
     }

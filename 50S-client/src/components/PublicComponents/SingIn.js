@@ -70,8 +70,8 @@ export function SignIn() {
   const dispatch = useDispatch();
   // instantiate the state
   const [info, setInfo] = useState({
-    email: "lucia@lucia.com",
-    password: "lucia"
+    email: "rafael12@rafael.com",
+    password: "test"
   });
 
   // handle the input, by get the input and assign to the state

@@ -1,5 +1,6 @@
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles'
+import { useSelector } from 'react-redux'
 import {
     Grid,
     Button,
@@ -8,6 +9,7 @@ import {
     MenuItem,
     Typography
 } from '@material-ui/core';
+import { apiCall } from '../../../services/api';
 
 let options = [];
 for(let i = 0; i <= 4; i+=0.25){
@@ -57,6 +59,49 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TimeCard(){
     const classes = useStyles()
+    const currentUser = useSelector(state => state.currentUser)
+    const [time, setTime] = React.useState({
+        shift: "",
+        overtime: 0
+      })
+
+    function handleChange(e){
+        let {name, value} = e.target
+        // convert overtime string to number
+        if(name === "overtime"){
+            let data = [0,0]
+            data = value.split(":")
+            value = data[0] + (data[1] / 60)
+        }
+        setTime(prev => {
+            return {
+                ...prev,
+                [name]: value 
+            }
+        })
+    }   
+
+    function timeNow(){
+        let now = new Date()
+        let hour = now.getHours();
+        let minutes = now.getMinutes();
+        return `${hour}:${minutes}`
+    }
+
+    function handleEntry(){
+        apiCall("post", `http://localhost:5000/salary/${currentUser.user.id}/entry`,{
+           workShift: time.shift,
+           entry: timeNow() 
+        })
+    }
+
+    function handleOut() {
+        apiCall("post", `http://localhost:5000/salary/${currentUser.user.id}/out`,{
+           ovetime: time.overtime,
+           out_time: timeNow() 
+        })
+    }
+
     return (
         <React.Fragment>
             <Grid>
@@ -69,18 +114,18 @@ export default function TimeCard(){
                         </InputLabel>
                         <Select
                         fullWidth
-                        name="account"
-                        label="Select Strategy"
-                        onChange = {()=> {console.log("worked")}}
+                        name="shift"
+                        label="Choose Shift"
+                        onChange = {handleChange}
                         formControlProps={{ fullWidth: true }}
                         >
-                            <MenuItem value="E1">Day</MenuItem>
-                            <MenuItem value="E3">Night</MenuItem>
+                            <MenuItem value="E1">Day - E1</MenuItem>
+                            <MenuItem value="E3">Night - E3</MenuItem>
                         </Select>
                 </Grid>
                 <Grid className={classes.inputBox}>
                     <Button
-                        onClick={()=>console.log("In")}
+                        onClick={handleEntry}
                         variant="contained"
                         color="primary"
                         fullWidth
@@ -99,7 +144,7 @@ export default function TimeCard(){
                     default="0:0"
                     name="overtime"
                     label="Overtime"
-                    onChange = {()=> {console.log("worked")}}
+                    onChange = {handleChange}
                     formControlProps={{ fullWidth: true }}
                     >
                     
@@ -108,7 +153,7 @@ export default function TimeCard(){
                 </Grid>
                 <Grid className={classes.inputBox}>
                     <Button
-                        onClick={() => console.log("out")}
+                        onClick={handleOut}
                         variant="contained"
                         color="primary"
                         fullWidth

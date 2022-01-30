@@ -13,10 +13,6 @@ const brookerSchema = new mongoose.Schema({
     password: {
         type: String
     },
-    client_list:[{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "TradingProfile"
-    }],
     account_list: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Account"

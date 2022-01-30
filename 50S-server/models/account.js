@@ -26,12 +26,6 @@ const accountSchema = new mongoose.Schema({
         require: true,
         min: 0
     },
-    assertivity: {
-        type: Number,
-        required: true, 
-        min: 0,
-        max: 100
-    },
     withdrawable: {
         status: {
             type: Boolean
@@ -65,12 +59,16 @@ const accountSchema = new mongoose.Schema({
     }, 
     brooker: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Brooker",
-        required: true
+        ref: "Brooker"
     },
-    orders: [{
+    orders_day: [{
+        day: {
+            type: String
+        },
+        orders:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Order"
+        }]
     }]
 }, {timestamps: true})
 
@@ -84,7 +82,8 @@ accountSchema.pre("remove", async function(next){
 
         let foundUser = await mongoose.model('TradingProfile').findById(this.trading_profile);
         await foundUser.accounts.remove(this.id);
-        await user.save()
+        console.log(foundUser.accounts)
+        await foundUser.save()
         return next();
     } catch(err) {
         return(err);

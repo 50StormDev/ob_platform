@@ -15,7 +15,6 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    
     email: {
         type: String,
         required: true,
@@ -32,9 +31,6 @@ const userSchema = new Schema({
     },
     profileImageUrl:{
         type: String
-    },
-    last_login: {
-        type: Date
     },
     holerite: [
         {

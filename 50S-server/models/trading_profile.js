@@ -60,7 +60,11 @@ const tradingProfileSchema = new Schema({
     accounts:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Account"
-    }]
+    }],
+    personal_account: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Account"
+    }
 },{timestamps: true}); 
 
 // Remove the trading profile from User

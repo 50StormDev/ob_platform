@@ -27,7 +27,7 @@ const useStyles = makeStyles({
 });
 
 export default function Trade() {
-
+  const classes = useStyles();
   const dispatch = useDispatch()
   const profile = useSelector(state => state.profile)
   const strategyList = useSelector(state => state.strategyList)
@@ -73,7 +73,7 @@ export default function Trade() {
     return round( entry - initial)
   }
 
-  const classes = useStyles();
+  
   
   // setup the initial state
   function setUpTrade(e) {

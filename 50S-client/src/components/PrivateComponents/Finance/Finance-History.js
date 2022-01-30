@@ -58,7 +58,7 @@ export default function StickyHeadTable() {
       profile_id: profile.data.id,
     }))
     .then(unwrapResult).then(res => {
-      res.history.map(item => rows.push(createData(item.transaction_day, item.transaction_action, item.transaction_account, item.transaction_ammount)))
+      res.history.map(item => rows.push(createData(item.transaction_day, item.transaction_action, item.transaction_account, item.transaction_amount)))
       setLinha({history: rows})
       dispatch(removeError())
     }).catch((error) => {

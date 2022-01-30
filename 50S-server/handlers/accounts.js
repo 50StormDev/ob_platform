@@ -2,7 +2,15 @@ const db = require('../models');
 
 // get all account
 exports.get = async function (req, res, next){
-
+    try {
+        let foundAccount = await db.Account.findById(req.params.account_id)
+        return res.status(201).json({ info: foundAccount})
+    } catch (err){
+        return next({
+            status: 500,
+            message: err
+        })
+    }
 }
 exports.getAll = async function (req, res, next){
 
@@ -101,29 +109,35 @@ exports.createAccount = async function (req, res, next){
 exports.deposit = async function(req, res, next){
     try {
         let foundAccount = await db.Account.findById(req.params.account_id);
-        let balance = Number(foundAccount.balance) + Number(req.body.ammount)
+        let balance = Number(foundAccount.balance) + Number(req.body.amount)
         foundAccount.balance = balance
         await foundAccount.save();
         let foundProfile = await db.TradingProfile.findById(req.params.profile_id)
+        let total_balance = Number(foundProfile.totalBalance) + Number(req.body.amount)
+        foundProfile.totalBalance = total_balance
+        await foundProfile.save();
         await foundProfile.populate('accounts').execPopulate()
         let foundTransactionProfile = await db.Transaction.findOne({trading_profile: req.params.profile_id})
+        let today = new Date()
+        let month = today.getMonth() + 1
+        let day = `${today.getDate()}/${month}/${today.getFullYear()}`
         if(!foundTransactionProfile){
-
+            
             let firstDeposit = await db.Transaction.create({
                 trading_profile: req.params.profile_id,
                 transaction_history:[{
-                    transaction_day: req.body.day,
+                    transaction_day: day,
                     transaction_action: "Deposit",
                     transaction_account: req.params.account_id,
-                    transaction_ammount: req.body.ammount
+                    transaction_amount: req.body.amount
                 }]
             })
         } else {
             foundTransactionProfile.transaction_history.push({
-                transaction_day: req.body.day,
+                transaction_day: day,
                 transaction_action: "Deposit",
                 transaction_account: req.params.account_id,
-                transaction_ammount: req.body.ammount
+                transaction_amount: req.body.amount
             })
             await foundTransactionProfile.save()
         }
@@ -140,30 +154,34 @@ exports.deposit = async function(req, res, next){
 exports.withdraw = async function(req, res, next){
     try {
         let foundAccount = await db.Account.findById(req.params.account_id);
-        let balance = Number(foundAccount.balance) - Number(req.body.ammount)
-        console.log(typeof(balance))
+        let balance = Number(foundAccount.balance) - Number(req.body.amount)
         foundAccount.balance = balance
         await foundAccount.save();
         let foundProfile = await db.TradingProfile.findById(req.params.profile_id)
+        let total_balance = Number(foundProfile.totalBalance) - Number(req.body.amount)
+        foundProfile.totalBalance = total_balance
+        await foundProfile.save();
         await foundProfile.populate('accounts').execPopulate()
         let foundTransactionProfile = await db.Transaction.findOne({trading_profile: req.params.profile_id})
+        let today = new Date()
+        let month = today.getMonth() + 1
+        let day = `${today.getDate()}/${month}/${today.getFullYear()}`
         if(!foundTransactionProfile){
-
             let firstDeposit = await db.Transaction.create({
                 trading_profile: req.params.profile_id,
                 transaction_history:[{
-                    transaction_day: req.body.day,
+                    transaction_day: day,
                     transaction_action: "Withdraw",
                     transaction_account: req.params.account_id,
-                    transaction_ammount: req.body.ammount
+                    transaction_amount: req.body.amount
                 }]
             })
         } else {
             foundTransactionProfile.transaction_history.push({
-                transaction_day: req.body.day,
+                transaction_day: day,
                 transaction_action: "Withdraw",
                 transaction_account: req.params.account_id,
-                transaction_ammount: req.body.ammount
+                transaction_amount: req.body.amount
             })
             await foundTransactionProfile.save()
         }
@@ -180,6 +198,9 @@ exports.withdraw = async function(req, res, next){
 exports.history = async function(req, res, next){
     try {
         let foundTransactionProfile = await db.Transaction.findOne({trading_profile: req.params.profile_id})
+        if(!foundTransactionProfile){
+            return res.status(200).json({history:[]})
+        }
         return res.status(200).json({history:foundTransactionProfile.transaction_history})
     } catch(e) {
         return next({

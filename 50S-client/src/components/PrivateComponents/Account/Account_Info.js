@@ -23,7 +23,6 @@ export default function AccountForm() {
   const strategyList = useSelector(state => state.strategyList)
   const [account, setAccount] = useState({
     account_name: "", // name of the account
-    account_type: "", // type if Personal or a Client
     target: 0,  // how much wants to achive
     strategy: "", // strategy name if use one of the list
     strategy_name: "",  // name of the new strategy

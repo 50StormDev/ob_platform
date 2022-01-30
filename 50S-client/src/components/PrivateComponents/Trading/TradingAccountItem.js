@@ -42,7 +42,7 @@ export default function AccountItem(props){
               <TableCell  style={{color: "#fff"}}>Account</TableCell>
               <TableCell align="left" style={{color: "#fff"}}>Status</TableCell>
               <TableCell align="left" style={{color: "#fff"}}>Progress</TableCell>
-              <TableCell align="left" style={{color: "#fff"}}>Trade</TableCell>
+              <TableCell align="center" style={{color: "#fff"}}>Trade</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -50,8 +50,8 @@ export default function AccountItem(props){
               <TableRow >
                 <TableCell align="left">{item.account_name}</TableCell>
                 <TableCell align="left">Incomplete</TableCell>
-                <TableCell align="left">20%</TableCell>
-                <TableCell align="left"><Button onClick={props.openTrade}variant="outlined">Trade</Button></TableCell>
+                <TableCell align="left">{item.target ? (item.balance / item.target)*100 + " %" : "No Target"}</TableCell>
+                <TableCell align="center"><Button onClick={props.openTrade}variant="outlined">Trade</Button></TableCell>
               </TableRow>
             ))}
           </TableBody>

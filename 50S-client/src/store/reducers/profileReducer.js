@@ -10,7 +10,8 @@ const initialState = {
         total_loss: 0,
         totalBalance:0,
         totalProfit:0,
-        notification:[]
+        notification:[],
+        personal_account: null
     },
     status: ""
 }
@@ -28,7 +29,7 @@ const routerSlice = createSlice({
     initialState,
     reducers:{
         populate: (state, action) => {
-            const { withdraw_list, accounts, total_win, total_loss, totalBalance, totalProfit, notification} = action.payload
+            const { withdraw_list, accounts, total_win, total_loss, totalBalance, totalProfit, notification, personal_account} = action.payload
             
             state.data = {
                 id: action.payload._id,
@@ -38,7 +39,8 @@ const routerSlice = createSlice({
                 total_loss, 
                 totalBalance, 
                 totalProfit, 
-                notification
+                notification,
+                personal_account
             }
             state.status = "fullfield"
         },
@@ -52,7 +54,6 @@ const routerSlice = createSlice({
             state.status = "pending"
         },
         [getProfile.fulfilled]: (state, {payload}) => {
-            
             state.data = payload.trading_profile[0];
             state.status = "fullfield"
         }, 

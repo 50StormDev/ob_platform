@@ -45,13 +45,10 @@ const useStyles = makeStyles((theme) => ({
 export default function Deposits() {
   const dispatch = useDispatch()
   const profile = useSelector(state => state.profile)
-  let today = new Date()
-  let month = today.getMonth() + 1
   const [info, setInfo] = useState({
     account: null,
-    ammount: 0,
-    total_balance: 0,
-    day:`${today.getDate()}/${month}/${today.getFullYear()}`
+    amount: 0,
+    total_balance: 0
   })
 
   function handleChange(e){
@@ -61,7 +58,7 @@ export default function Deposits() {
         setInfo(prev => {
       return {
         ...prev,
-        ammount:0, 
+        amount:0, 
         [name]: value,
       total_balance: total[0].balance
       };
@@ -82,14 +79,13 @@ export default function Deposits() {
       path:"http://localhost:5000/account",
       profile_id: profile.data.id,
       account_id: info.account,
-      ammount: info,
-      day: info.day
+      amount: info
     }))
     .then(unwrapResult).then(deposit => {
       setInfo(prev => {
         return {
         account: prev.account,
-        ammount: 0,
+        amount: 0,
         total_balance: deposit.total_balance
       }})
       dispatch(refreshAccount(deposit.refresh.accounts))
@@ -129,15 +125,15 @@ export default function Deposits() {
           margin="normal"
           required
           fullWidth
-          name="ammount"
+          name="amount"
           label="Amount"
           type="text"
-          value={info.ammount}
+          value={info.amount}
           onChange={handleChange}
           />
           <h3>Balance: ${info.total_balance}</h3>
-          <h3>Deposit: ${info.ammount}</h3>
-          <h3>Total Balance: ${parseFloat(info.total_balance) + parseFloat(info.ammount)}</h3>
+          <h3>Deposit: ${info.amount}</h3>
+          <h3>Total Balance: ${parseFloat(info.total_balance) + parseFloat(info.amount)}</h3>
           <Button
           type="submit"
           fullWidth

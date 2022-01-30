@@ -62,7 +62,7 @@ export default function AccountStrategy(props){
                   step={1}
                   marks
                   min={1}
-                  max={20}
+                  max={50}
                   onChange={props.handleRisk}
               />
           </Grid>   

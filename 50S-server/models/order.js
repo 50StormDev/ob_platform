@@ -2,15 +2,15 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const orderSchema = new Schema({
-    pair: {
+    account_id: {
         type: String,
         required: true
     },
-    timeframe: {
+    asset: {
         type: String,
         required: true
     },
-    amount: {
+    trade_mount: {
         type: Number,
         required: true
     },
@@ -18,12 +18,16 @@ const orderSchema = new Schema({
         type: Number,
         required: true
     },
+    result: {
+        type: String,
+        required: true
+    },
     profit: {
         type: Number,
         required: true
     },
-    result: {
-        type: String,
+    completed: {
+        type: Boolean,
         required: true
     }
 }, {

@@ -12,6 +12,8 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { makeStyles } from '@material-ui/core/styles';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import CandlestickChartIcon from '@mui/icons-material/CandlestickChart';
+import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 
 const useStyles = makeStyles({
   menu_link: {
@@ -57,9 +59,15 @@ function MainListItems() {
           </ListItemIcon>
           <ListItemText primary="Salary" />
         </ListItem>
+        <ListItem button className={classes.menu_link} onClick={()=> dispatch(push("/Salary"))}>
+          <ListItemIcon>
+            <LocalGroceryStoreIcon className={classes.icon}/>
+          </ListItemIcon>
+          <ListItemText primary="Expenses" />
+        </ListItem>
         <ListItem button className={classes.menu_link} onClick={()=> dispatch(push("/Trading"))}>
           <ListItemIcon>
-            <TrendingUpIcon className={classes.icon}/>
+            <CandlestickChartIcon className={classes.icon}/>
           </ListItemIcon>
           <ListItemText primary="Trading" />
         </ListItem>
@@ -89,3 +97,8 @@ function MainListItems() {
 
 
 export default MainListItems
+
+
+
+
+

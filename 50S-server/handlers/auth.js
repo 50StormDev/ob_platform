@@ -15,6 +15,9 @@ exports.signin = async function(req, res, next){
         let foundTradingProfile = await db.TradingProfile.findOne({user: id})
         // populate infos that will be needed 
         await foundTradingProfile.populate('accounts','account_name balance').execPopulate()
+        // populate infos that will be needed 
+        await foundTradingProfile.populate('personal_account','account_name id').execPopulate()
+        console.log(foundTradingProfile)
         // check if the password is correct
         let isMatch = await user.comparePassword((req.body.password));
         // get the strategies that will be use to populate the platform 
@@ -62,16 +65,20 @@ exports.signup = async function(req, res, next){
         // create a user
         // create a token (sigin a token)
         // process.env.SECRET_KEY
-        console.log({...req.body})
-        let user = await db.User.create({...req.body});
         
-        let { id, fName, lName, email, username, password, profileImageUrl} = user 
         var today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
         var yyyy = today.getFullYear();
-        today = mm + '/' + dd + '/' + yyyy;
         
+        
+        let user = await db.User.create({...req.body, holerite: {month: (today.getMonth() + 1), days:[]}});
+        
+        oday = mm + '/' + dd + '/' + yyyy;
+        console.log(user)
+
+        
+        let { id, fName, lName, email, username, password, profileImageUrl} = user 
         let tradingProfile = await db.TradingProfile.create({
             user: id,
             accounts: [],
@@ -79,9 +86,34 @@ exports.signup = async function(req, res, next){
             totalBalance: 0,
             totalProfit: 0,
             total_loss: 0,
-            total_win: 0
-            
+            total_win: 0,
+            personal_account: null
         })
+
+        let account = await db.Account.create({
+            account_name: "Personal Account",
+            balance: 0,
+            lifes: 0,
+            wins: 0,
+            losses: 0,
+            assertivity: 0,
+            withdrawable: {
+                status: false,
+                withdrawable_amount: 0
+            },
+            target: 0,
+            otc: {
+                otc_status: false,
+                otc_amount: 0
+            },
+            trading_profile: tradingProfile.id,
+            orders: []
+        });
+
+        tradingProfile.personal_account = account
+        tradingProfile.accounts.push(account)
+        await tradingProfile.save()
+
 
         let token = jwt.sign(
             {

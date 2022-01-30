@@ -48,4 +48,6 @@ const strategySchema = new mongoose.Schema({
     }]
 })
 
+
+
 module.exports = mongoose.model("Strategy", strategySchema, "strategies")

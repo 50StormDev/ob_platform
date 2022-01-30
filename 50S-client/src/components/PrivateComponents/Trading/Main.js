@@ -18,7 +18,7 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    margin: '22%',
+    margin: '14%',
     marginTop: "10%",
     backgroundColor: theme.palette.background.paper,
     borderRadius: '3px'
@@ -40,7 +40,7 @@ export default function SelectedListItem() {
     {trade.status === false ? 
     <Paper style={{ padding: 16 }}>
         <Typography variant="h4" align="center" component="h1" gutterBottom>
-            Accounts
+            Account List
         </Typography>
         <TradingItem openTrade={openTrade} profile={profile.data.accounts}/> 
     </Paper> : <Trade/>
