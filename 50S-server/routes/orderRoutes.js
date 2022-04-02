@@ -1,7 +1,7 @@
-import { Router } from 'express';
-const router = Router();
-import { create } from '../handlers/brookers.js';
+const express = require('express');
+const router = express.Router();
+const { trade } = require('../handlers/orders.js');
 
-router.post("/:brooker_name/:account_id/:day/add", create);
+router.post("/:account_id", trade);
 
-export default router;
+module.exports = router;

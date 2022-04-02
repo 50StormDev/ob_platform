@@ -99,9 +99,6 @@ exports.out =  async function(req, res, next){
     } else {
       throw Error("User not Found")
     }
-    
-    
-     
   } catch(err) {
     return next({
       status: 500, 

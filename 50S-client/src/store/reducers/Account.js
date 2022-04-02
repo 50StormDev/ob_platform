@@ -81,6 +81,14 @@ export const withdrawAccount = createAsyncThunk(
     }
 ) 
 
+export const trade = createAsyncThunk(
+    'account/trade',
+    async({path,account_id, amount}) => {
+        const response = apiCall("post", `${path}/${account_id}`, amount)
+        return response    
+    }
+) 
+
 const accountSlice = createSlice({
     name: "account",
     initialState,

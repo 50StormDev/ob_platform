@@ -4,9 +4,8 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import StaticDatePicker from '@mui/lab/StaticDatePicker';
 import { TextField, Container, Grid, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import SalaryPrediction from './SalaryPrediction'
-import TimeCard from './TimeCard'
-import Month from './Month'
+import ExpensesForm from './ExpensesForm'
+import ExpensesList from './ExpensesList'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -16,16 +15,16 @@ const useStyles = makeStyles((theme) => ({
   mainContent: {
     background: "#ffff",
     opacity: "1",
-    padding: "35px",
+    padding: "5px",
     borderRadius: "10px"
   }
 }));
-export default function Salary() {
+export default function Expenses() {
   const classes = useStyles();
   const [day, setDay] = React.useState(new Date());
   return (
     <React.Fragment>
-      <Container maxWidth="lg" className={classes.container}>
+      <Container className={classes.container}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <StaticDatePicker
             orientation="landscape"
@@ -40,23 +39,11 @@ export default function Salary() {
         </LocalizationProvider>
       </Container>
       <Container maxWidth="lg" className={classes.container}>
-        <SalaryPrediction day={day}/>
-      </Container>
-      <Container maxWidth="lg" className={classes.container}>
         <Grid className={classes.mainContent}>
-            <TimeCard/>
+          <ExpensesForm/>
+          <ExpensesList/>
         </Grid>
       </Container>
-      <Container maxWidth="lg" className={classes.container}>
-        <Grid className={classes.mainContent}>
-            <Month/>
-        </Grid>
-      </Container>
-      
-      
-      
     </React.Fragment>
-    
-    
   );
 }

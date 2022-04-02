@@ -12,6 +12,7 @@ import Dashboard from '../components/PrivateComponents/dashboard/Dashboard';
 import Account from '../components/PrivateComponents/Account/Account';
 import Brookers from '../components/PrivateComponents/Main/Brookers'
 import Salary from "../components/PrivateComponents/Salary/Salary"
+import Expenses from "../components/PrivateComponents/Expenses/Expenses"
 import history from './history';
 
 
@@ -28,6 +29,7 @@ function Routes() {
                 <PrivateRoute component={Finance} path="/Finance" exact />
                 <PrivateRoute component={Account} path="/Account" exact />
                 <PrivateRoute component={Salary} path="/Salary" exact />
+                <PrivateRoute component={Expenses} path="/Expenses" exact />
                 <PublicRoute component={SignIn}/>
                 <Route>
                 </Route>

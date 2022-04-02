@@ -8,6 +8,7 @@ const tradingProfileRoutes = require("./routes/tradingProfileRoute");
 const brookerRoutes = require("./routes/brookerRoute");
 const accountRoutes = require("./routes/accountRouter");
 const dayRouter = require("./routes/dayRouter")
+const orderRouter = require("./routes/orderRoutes")
 
 const { loginRequired, ensureCorrectUser } = require("./middleware/auth");
 require('dotenv').config();
@@ -38,6 +39,7 @@ app.use("/admin", brookerRoutes);
 app.use("/profile", tradingProfileRoutes );
 app.use("/account", accountRoutes);
 app.use("/salary", dayRouter)
+app.use("/trade", orderRouter)
 // Profile (CRUD User info)
 // Dashboard (Get all infos)
    // user/:id/

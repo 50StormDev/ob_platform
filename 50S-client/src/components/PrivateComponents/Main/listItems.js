@@ -59,7 +59,7 @@ function MainListItems() {
           </ListItemIcon>
           <ListItemText primary="Salary" />
         </ListItem>
-        <ListItem button className={classes.menu_link} onClick={()=> dispatch(push("/Salary"))}>
+        <ListItem button className={classes.menu_link} onClick={()=> dispatch(push("/Expenses"))}>
           <ListItemIcon>
             <LocalGroceryStoreIcon className={classes.icon}/>
           </ListItemIcon>

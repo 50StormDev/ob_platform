@@ -25,10 +25,6 @@ const orderSchema = new Schema({
     profit: {
         type: Number,
         required: true
-    },
-    completed: {
-        type: Boolean,
-        required: true
     }
 }, {
     timestamps: true

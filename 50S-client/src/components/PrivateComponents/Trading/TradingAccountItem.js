@@ -34,6 +34,7 @@ export default function AccountItem(props){
       dispatch(addError(error))
     })
   }
+  const round = (number) =>  {return Math.round(number * 100) / 100}
     return (
       <TableContainer>
         <Table sx={{ minWidth: 650 }} aria-label="caption table">
@@ -50,7 +51,7 @@ export default function AccountItem(props){
               <TableRow >
                 <TableCell align="left">{item.account_name}</TableCell>
                 <TableCell align="left">Incomplete</TableCell>
-                <TableCell align="left">{item.target ? (item.balance / item.target)*100 + " %" : "No Target"}</TableCell>
+                <TableCell align="left">{item.target ? round((item.balance / item.target)*100) + " %" : "No Target"}</TableCell>
                 <TableCell align="center"><Button onClick={props.openTrade}variant="outlined">Trade</Button></TableCell>
               </TableRow>
             ))}

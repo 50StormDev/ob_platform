@@ -15,9 +15,9 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import { addError, removeError } from '../../../store/reducers/error';
 
 const columns = [
+  { id: 'account', label: 'Account', minWidth: 100 },
   { id: 'date', label: 'Date', minWidth: 170 },
   { id: 'action', label: 'Deposit / Withdraw', minWidth: 170 },
-  { id: 'account', label: 'Account', minWidth: 100 },
   { id: 'amount',  label: 'Amount',  minWidth: 170,  align: 'center'}
 ];
 
@@ -80,7 +80,7 @@ export default function StickyHeadTable() {
     console.log(id)
     let account = profile.data.accounts.filter(item => item._id === id)
     console.log(account)
-    return account[0].account_name
+    return account.account_name
   }
 
   return (

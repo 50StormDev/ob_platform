@@ -10,6 +10,7 @@ import Assets from '../../../assets';
 import { MenuItem, Grid, InputLabel, Select, Divider } from '@material-ui/core';
 import { addOrder } from '../../../store/reducers/oderReducer';
 import { push } from 'connected-react-router';
+import { trade } from '../../../store/reducers/Account';
 var moment = require('moment')
 
 const useStyles = makeStyles({
@@ -46,6 +47,7 @@ export default function Trade() {
   let account_list = profile.data.accounts
 
   const [order, setorder] = useState({
+    id: "",
     name: "",
     pair: "",
     balance: 0,
@@ -88,10 +90,11 @@ export default function Trade() {
     const {consecutive_loss, max_loss, max_win, risk} = strategy[0]
     
     //setup the data to be place on the state
+    let id = value
     let name = choosed[0].account_name
-    let balance = choosed[0].balance
+    let balance = round(choosed[0].balance)
     let payout = 80
-    let entry = (balance / risk)
+    let entry = round(balance * (risk / 100))
     let take = soros(entry, payout, 2)
     let stop = entry
     let wins = 0
@@ -107,6 +110,7 @@ export default function Trade() {
       }
     })
     setorder({
+      id,
       balance, 
       entry, 
       take, 
@@ -143,7 +147,7 @@ export default function Trade() {
     balance += entry * (payout / 100);
     balance = round(balance)
     wins += 1 
-    entry = round(entry + soros(entry, payout, wins))
+    entry = round(balance * 0.3)
     
     dispatch(addOrder({
       date:localStorage.today,
@@ -153,6 +157,11 @@ export default function Trade() {
       payout: order.payout,
       entry: order.entry,
       result:"win" 
+    }))
+    dispatch(trade({
+      path:"http://localhost:5000/trade",
+      account_id: order.id,
+      amount: {amount: order.entry * (order.payout / 100)}
     }))
     setorder(prevInfo => {
       return {
@@ -185,6 +194,11 @@ export default function Trade() {
         entry: order.entry,
         result:"loss" 
       }))
+      dispatch(trade({
+      path:"http://localhost:5000/trade",
+      account_id: order.id,
+      amount: {amount: -order.entry}
+    }))
       setorder(prevInfo => {
       return {
         ...prevInfo,

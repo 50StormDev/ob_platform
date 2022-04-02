@@ -1,10 +1,30 @@
 const db = require('../models');
 
 // get all account
-exports.get = async function (req, res, next){
+exports.edit = async function (req, res, next){
     try {
         let foundAccount = await db.Account.findById(req.params.account_id)
-        return res.status(201).json({ info: foundAccount})
+        let account = ({
+            account_name: req.body.account_name,
+            balance: 0,
+            lifes: 0,
+            wins: 0,
+            losses: 0,
+            assertivity: 0,
+            withdrawable: {
+                status: false,
+                withdrawable_amount: 0
+            },
+            strategy: strategy_id,
+            target: req.body.target,
+            otc: {
+                otc_status: false,
+                otc_amount: 0
+            },
+            trading_profile: req.params.profile_id,
+            brooker: req.params.brooker_id,
+            orders: []
+        });
     } catch (err){
         return next({
             status: 500,
@@ -12,9 +32,7 @@ exports.get = async function (req, res, next){
         })
     }
 }
-exports.getAll = async function (req, res, next){
 
-}
 exports.createAccount = async function (req, res, next){
     let strategy_id = ""
     try {
@@ -97,7 +115,7 @@ exports.createAccount = async function (req, res, next){
             {path: 'accounts'
         }).execPopulate()
 
-        return res.status(201).json({ profile: foundProfile.accounts, strategy: foundStrategy})
+        return res.status(201).json({ profile: foundProfile.accounts})
     } catch (err){
         return next({
             status: 500,
